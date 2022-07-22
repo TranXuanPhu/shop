@@ -2,7 +2,7 @@
 node_modules/
 /dist
 client/public/images
-*.env.development
+**/config/.env.development
 
 # local env files
 .env.local
