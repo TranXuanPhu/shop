@@ -90,3 +90,12 @@ exports.getProducts = async (req, res, next) => {
     res.status(400).json({ error });
   }
 };
+
+exports.getProductBySlug = async (req, res, next) => {
+  try {
+    const product = await productModel.findOne({ slug: req.params.slug });
+    res.status(200).json({ product });
+  } catch (error) {
+    console.log('getProductBySlug:', error);
+  }
+};

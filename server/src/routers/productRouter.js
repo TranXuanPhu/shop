@@ -5,6 +5,6 @@ const productController = require('../app/controllers/productController.js');
 //router.get('/', productController.getProducts);
 router.post('/', multerHelper.cpUploadArray, productController.createProduct);
 
-//router.get('/:id', productController.getProductById);
+router.get('/:slug', productController.getProductBySlug);
 
 module.exports = router;

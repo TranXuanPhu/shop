@@ -51,7 +51,7 @@
         type="text"
         label="Màu sản phẩm"
         name="colors"
-        value="back,White,Blue Bird,Minimal Gray,Dream Blue,Adobe Rose,Paradise Pink,
+        value="Back,White,Blue Bird,Minimal Gray,Dream Blue,Adobe Rose,Paradise Pink,
 Banana Yellow,Orange Tiger,Purple Ash"
         validation="required"
         validation-visibility="dirty"

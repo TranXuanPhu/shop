@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import { plugin, defaultConfig } from "@formkit/vue";
+//import VueSplide from "@splidejs/vue-splide";
 
 import App from "./App.vue";
 import router from "./router/router.js";
@@ -16,5 +17,6 @@ const app = createApp(App);
 app.component("font-awesome-icon", FontAwesomeIcon);
 app.use(router);
 app.use(store);
+//app.use(VueSplide);
 app.use(plugin, defaultConfig);
 app.mount("#app");

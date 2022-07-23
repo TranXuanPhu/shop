@@ -3,16 +3,24 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
-    name: "home",
+    name: "Home",
     path: "/",
+    // alias: "/home",
     component: () => import("../views/Home.vue"),
   },
-  // {
-  //   name: "products",
-  //   path: "/products",
-  //   component: () => import("../views/Products.vue"),
+  { path: "/home", redirect: "/" },
+  {
+    name: "collections",
+    path: "/collections/:type?:q",
+    component: () => import("../views/Collections.vue"),
+  },
+  {
+    name: "collections",
+    path: "/collections/:type",
+    component: () => import("../views/Collections.vue"),
+  },
+  { path: "/collections", redirect: "/collections/all" },
 
-  // },
   // {
   //   name: "ProductDetail",
   //   path: "/products/:id",

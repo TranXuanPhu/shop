@@ -6,4 +6,11 @@ function toMoneyString(nMoney = 0) {
       .split(".")[0] + "₫"
   );
 }
-export { toMoneyString };
+function removeVietnameseTones(str) {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D");
+}
+export { toMoneyString, removeVietnameseTones };

@@ -1,0 +1,346 @@
+<template>
+  <div class="select-swatch clearfix">
+    <div id="variant-swatch-0" class="swatch clearfix" ref="swatchColor">
+      <div class="header">
+        Màu sắc:
+        <span class="color-text">{{ colorSelected.name }}</span>
+      </div>
+      <div class="select-swap">
+        <div
+          class="n-sd swatch-element color"
+          v-for="(color, index) in colors"
+          :key="index"
+          @click="selectSwatch(color)"
+          :class="isSoldOutBySwatch(color) ? 'soldout' : ''"
+        >
+          <input
+            class="variant-0 color-change"
+            id="swatch-0-black"
+            type="radio"
+            name="option1"
+            :value="color.name"
+            :data-vhandle="toDataHandlerSwatch(color.name)"
+            checked=""
+          />
+          <label :data-vhandle="toDataHandlerSwatch(color.name)">
+            <img
+              :src="`data:${color.image.img.contentType};base64,${color.image.img.data}`"
+              :alt="`${color.image.name}`"
+            />
+          </label>
+        </div>
+      </div>
+    </div>
+    <div id="variant-swatch-1" class="swatch clearfix" ref="swatchSize">
+      <div class="header">
+        Kích thước: <span class="color-text">M</span>
+        <div class="size-chart">
+          <i class="fa-solid fa-ruler fa-lg"></i>
+          Hướng dẫn chọn size
+        </div>
+      </div>
+      <div class="select-swap">
+        <div
+          class="n-sd swatch-element l"
+          v-for="(size, index) in colorSelected?.sizes"
+          :key="index"
+          @click="selectSize(size)"
+          :data-value="size.name"
+        >
+          <input
+            type="radio"
+            :value="size.name"
+            :data-vhandle="toDataHandlerSwatch(size.name)"
+            v-model="sizeSelected"
+          />
+          <label :data-vhandle="toDataHandlerSwatch(size.name)">
+            <span>{{ size.name }}</span>
+            <img
+              class="img-check"
+              width="14"
+              height="14"
+              src="//theme.hstatic.net/200000031420/1000879437/14/select-pro.png?v=28"
+            />
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import { onMounted, ref } from "vue";
+import { removeVietnameseTones } from "../utils/utils.js";
+export default {
+  name: "select-swatch-template",
+  props: {
+    colors: {
+      type: Array,
+    },
+  },
+  setup(props) {
+    //data
+    const colorSelected = ref({});
+    const sizeSelected = ref();
+
+    // ref  id="variant-swatch-0"
+    const swatchColor = ref(null);
+    // ref id="variant-swatch-1"
+    const swatchSize = ref(null);
+
+    function isSoldOutBySwatch(color) {
+      let quantity = 0;
+      color.sizes.forEach((size) => {
+        quantity += size.quantity;
+      });
+      return quantity <= 0;
+    }
+    function isSoldOutBySize(size) {
+      return size.quantity <= 0;
+    }
+    //methods
+    function selectSize(size) {
+      //check soldout
+      if (isSoldOutBySize(size)) return;
+      //remove class sd
+      const labelElements = swatchSize.value.querySelectorAll(
+        "label[data-vhandle]"
+      );
+      //console.log(labelElements);
+      //có mới làm
+      if (labelElements.length < 1) return;
+      labelElements.forEach((element) => {
+        element.classList.remove("sd");
+      });
+
+      //add class sd
+      const elLabel = swatchSize.value.querySelector(
+        `label[data-vhandle='${toDataHandlerSwatch(size.name)}']`
+      );
+      elLabel.classList.add("sd");
+
+      sizeSelected.value = size;
+      return;
+    }
+
+    function selectSwatch(color) {
+      //check soldout
+      if (isSoldOutBySwatch(color)) return;
+      //remove class sd
+      const labelElements = swatchColor.value.querySelectorAll(
+        "label[data-vhandle]"
+      );
+      labelElements.forEach((element) => {
+        element.classList.remove("sd");
+      });
+
+      //add class sd
+      const elLabel = swatchColor.value.querySelector(
+        `label[data-vhandle='${toDataHandlerSwatch(color.name)}']`
+      );
+      elLabel.classList.add("sd");
+
+      colorSelected.value = color;
+
+      //chọn size
+      sizeSelected.value = undefined;
+      for (const size of color.sizes) {
+        if (!isSoldOutBySize(size)) {
+          selectSize(size);
+          break;
+        }
+      }
+    }
+    function toDataHandlerSwatch(colorName) {
+      return (
+        "swatch-" +
+        removeVietnameseTones(colorName).toLowerCase().split(" ").join("-")
+      );
+    }
+
+    onMounted(() => {
+      if (props.colors[0]) {
+        selectSwatch(props.colors[0]);
+      }
+    });
+    // watch(
+    //   () => colorSelected,
+    //   (newColor, oldColor) => {
+    //     // (newColor) => {
+    //     console.log(newColor, oldColor);
+    //     // for (const size of newColor.sizes) {
+    //     //   if (!isSoldOutBySize(size)) {
+    //     //     selectSize(size);
+    //     //     break;
+    //     //   }
+    //     // }
+    //   }
+    // );
+    // watchEffect(() => {
+    //   console.log("hihi", colorSelected.value);
+    //   if (Object.values(colorSelected.value).length !== 0) {
+    //     for (const size of colorSelected.value.sizes) {
+    //       if (!isSoldOutBySize(size)) {
+    //         selectSize(size);
+    //         break;
+    //       }
+    //     }
+    //   }
+    // });
+    return {
+      selectSwatch,
+      colorSelected,
+      swatchColor,
+      swatchSize,
+      toDataHandlerSwatch,
+      isSoldOutBySwatch,
+      sizeSelected,
+      selectSize,
+      isSoldOutBySize,
+    };
+  },
+};
+</script>
+<style scoped>
+.swatch {
+  padding: 10px 0;
+  width: 100%;
+  float: left;
+  border-bottom: 1px dotted #dfe0e1;
+}
+.swatch .header {
+  display: flex;
+  align-items: center;
+}
+.swatch .header {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-align: left;
+  line-height: initial;
+}
+.swatch .header > span {
+  margin-left: 3px;
+}
+.swatch .select-swap {
+  display: inline-block;
+  vertical-align: middle;
+}
+.swatch .swatch-element {
+  display: inline-block;
+  margin-right: 8px;
+  position: relative;
+  vertical-align: bottom;
+}
+.swatch-element.soldout {
+  opacity: 0.5;
+}
+.swatch input {
+  display: none;
+}
+.swatch .swatch-element label {
+  display: block;
+  margin: 0;
+  background: #fff;
+  min-width: 40px;
+  height: 40px;
+  line-height: 40px;
+  position: relative;
+  border: 1px solid #e5e5e5;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+.swatch .swatch-element label.sd {
+  border: 1px solid #e4393c;
+}
+.swatch .swatch-element.color label {
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  padding: 3px;
+  border-radius: 50%;
+}
+.swatch .swatch-element.color label.sd {
+  background: 0 0;
+}
+.swatch .swatch-element.color img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
+  font-size: 0;
+  border-radius: 50%;
+  border: 1px solid #f5f5f5;
+  background-image: var(--bg-swatch);
+  background-size: contain;
+  background-position: center;
+}
+.swatch .swatch-element.color.soldout label img {
+  /* overflow: hidden; */
+  position: relative;
+}
+.swatch .swatch-element.color.soldout label img:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 50%;
+  height: 50%;
+  background: url(//theme.hstatic.net/200000031420/1000879437/14/sold_out.png?v=28)
+    no-repeat;
+  background-size: contain;
+}
+.swatch:last-child {
+  border: none;
+}
+.swatch .header {
+  margin: 0 0 8px;
+  font-size: 13px;
+  text-align: left;
+  line-height: initial;
+}
+.swatch .header {
+  display: flex;
+  align-items: center;
+}
+.swatch .header > span {
+  margin-left: 3px;
+}
+.size-chart {
+  border: none;
+  background: none;
+  font-weight: bold;
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.size-chart svg {
+  margin-right: 5px;
+}
+.swatch .select-swap {
+  display: inline-block;
+  vertical-align: middle;
+}
+.swatch .swatch-element {
+  display: inline-block;
+  margin-right: 8px;
+  position: relative;
+  vertical-align: bottom;
+}
+.swatch .swatch-element label.sd {
+  border: 1px solid #e4393c;
+}
+.swatch .img-check {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.swatch-element label.sd img.img-check {
+  display: block;
+}
+</style>

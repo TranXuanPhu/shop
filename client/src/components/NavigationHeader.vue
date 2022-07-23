@@ -5,7 +5,7 @@
         <div class="row-left-list d-flex d-flex-center">
           <!-- left -->
           <div class="logo col-md-2 col-xs-6 col-sm-4 pd-right-0">
-            <a href="/">
+            <router-link :to="{ name: 'Home' }">
               <img
                 class="dt-width-auto"
                 height="30"
@@ -13,14 +13,14 @@
                 src="https://file.hstatic.net/200000031420/file/logo_heyyou_website-04_cfe6eb8b64f7430db789de966b4003b3.png"
                 alt="heyyoustudiovn"
               />
-            </a>
+            </router-link>
           </div>
 
           <!-- center -->
           <nav class="col-md-8 hidden-xs hidden-sm pd-right-0">
             <ul id="menu-desktop" class="menu-desk">
               <li class="active">
-                <a href="/"> TRANG CHỦ</a>
+                <router-link :to="{ name: 'Home' }"> TRANG CHỦ </router-link>
               </li>
               <li class=" ">
                 <a href="/collections/allitems">

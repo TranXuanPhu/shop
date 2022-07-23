@@ -11,7 +11,7 @@
 <script>
 import { ref } from "vue";
 import NavigationHeader from "./components/NavigationHeader.vue";
-
+import "@splidejs/vue-splide/css";
 export default {
   name: "App",
   components: { NavigationHeader },
