@@ -18,16 +18,20 @@ const getters = {
 //được gọi bằng cách từ vue component: this.$store.dispatch
 // trả về giá trị gọi commit cho mutations
 const actions = {
-  async getAllProducts({ commit }) {
+  async getAllProducts({ commit, dispatch }) {
     try {
+      dispatch("setLoading", true, { root: true });
       axios.get().then((response) => {
         console.log(response);
+
         commit("setProducts", {
           products: response.data.products,
         });
+        dispatch("setLoading", false, { root: true });
       });
     } catch (error) {
       console.error("getAllProducts", error);
+      dispatch("setLoading", false, { root: true });
     }
   },
 };

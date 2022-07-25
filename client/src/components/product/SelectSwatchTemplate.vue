@@ -1,67 +1,117 @@
 <template>
-  <div class="select-swatch clearfix">
-    <div id="variant-swatch-0" class="swatch clearfix" ref="swatchColor">
-      <div class="header">
-        Màu sắc:
-        <span class="color-text">{{ colorSelected.name }}</span>
-      </div>
-      <div class="select-swap">
-        <div
-          class="n-sd swatch-element color"
-          v-for="(color, index) in colors"
-          :key="index"
-          @click="selectSwatch(color)"
-          :class="isSoldOutBySwatch(color) ? 'soldout' : ''"
-        >
-          <input
-            class="variant-0 color-change"
-            id="swatch-0-black"
-            type="radio"
-            name="option1"
-            :value="color.name"
-            :data-vhandle="toDataHandlerSwatch(color.name)"
-            checked=""
-          />
-          <label :data-vhandle="toDataHandlerSwatch(color.name)">
-            <img
-              :src="`data:${color.image.img.contentType};base64,${color.image.img.data}`"
-              :alt="`${color.image.name}`"
+  <div class="variants clearfix">
+    <div class="select-swatch clearfix">
+      <div id="variant-swatch-0" class="swatch clearfix" ref="swatchColor">
+        <div class="header">
+          Màu sắc:
+          <span class="color-text">{{ colorSelected.name }}</span>
+        </div>
+        <div class="select-swap">
+          <div
+            class="n-sd swatch-element color"
+            v-for="(color, index) in colors"
+            :key="index"
+            @click="selectSwatch(color)"
+            :class="isSoldOutBySwatch(color) ? 'soldout' : ''"
+          >
+            <input
+              class="variant-0 color-change"
+              id="swatch-0-black"
+              type="radio"
+              name="option1"
+              :value="color.name"
+              :data-vhandle="toDataHandlerSwatch(color.name)"
+              checked=""
             />
-          </label>
+            <label :data-vhandle="toDataHandlerSwatch(color.name)">
+              <img
+                :src="`data:${color.image.img.contentType};base64,${color.image.img.data}`"
+                :alt="`${color.image.name}`"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+      <div id="variant-swatch-1" class="swatch clearfix" ref="swatchSize">
+        <div class="header">
+          Kích thước: <span class="color-text">M</span>
+          <div class="size-chart">
+            <i class="fa-solid fa-ruler fa-lg"></i>
+            Hướng dẫn chọn size
+          </div>
+        </div>
+        <div class="select-swap">
+          <div
+            class="n-sd swatch-element l"
+            v-for="(size, index) in colorSelected?.sizes"
+            :key="index"
+            @click="selectSize(size)"
+            :data-value="size.name"
+            :class="isSoldOutBySize(size) ? 'soldout' : ''"
+          >
+            <input
+              type="radio"
+              :value="size.name"
+              :data-vhandle="toDataHandlerSwatch(size.name)"
+              v-model="sizeSelected"
+            />
+            <label :data-vhandle="toDataHandlerSwatch(size.name)">
+              <span>{{ size.name }}</span>
+              <img
+                class="img-check"
+                width="14"
+                height="14"
+                src="//theme.hstatic.net/200000031420/1000879437/14/select-pro.png?v=28"
+              />
+            </label>
+          </div>
         </div>
       </div>
     </div>
-    <div id="variant-swatch-1" class="swatch clearfix" ref="swatchSize">
-      <div class="header">
-        Kích thước: <span class="color-text">M</span>
-        <div class="size-chart">
-          <i class="fa-solid fa-ruler fa-lg"></i>
-          Hướng dẫn chọn size
-        </div>
-      </div>
-      <div class="select-swap">
-        <div
-          class="n-sd swatch-element l"
-          v-for="(size, index) in colorSelected?.sizes"
-          :key="index"
-          @click="selectSize(size)"
-          :data-value="size.name"
-        >
+    <div class="row">
+      <div class="col-xs-12 selector-actions d-flex d-flex-center pd-top-10">
+        <div class="quantity-area">
           <input
-            type="radio"
-            :value="size.name"
-            :data-vhandle="toDataHandlerSwatch(size.name)"
-            v-model="sizeSelected"
+            type="button"
+            value="–"
+            @click="minusQuantity()"
+            class="qty-btn qtyminus"
           />
-          <label :data-vhandle="toDataHandlerSwatch(size.name)">
-            <span>{{ size.name }}</span>
-            <img
-              class="img-check"
-              width="14"
-              height="14"
-              src="//theme.hstatic.net/200000031420/1000879437/14/select-pro.png?v=28"
-            />
-          </label>
+          <input
+            type="text"
+            id="quantity"
+            name="quantity"
+            value="1"
+            min="1"
+            class="quantity-selector"
+          />
+          <input
+            type="button"
+            value="+"
+            @click="plusQuantity()"
+            class="qty-btn qtyplus"
+          />
+        </div>
+        <div class="wrap-addcart">
+          <div class="row-flex">
+            <button
+              type="button"
+              id="add-to-cart"
+              class="flex-addcart-mb add-to-cart-style"
+              name="add"
+              @click="addToCart"
+            >
+              <span>Thêm vào giỏ</span>
+            </button>
+            <button
+              type="button"
+              id="buy-now"
+              class="hidden-xs buynow-style"
+              name="add"
+            >
+              <span>Mua ngay</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -69,7 +119,8 @@
 </template>
 <script>
 import { onMounted, ref } from "vue";
-import { removeVietnameseTones } from "../utils/utils.js";
+import { useStore } from "vuex";
+import { removeVietnameseTones } from "../../helpers/utils.js";
 export default {
   name: "select-swatch-template",
   props: {
@@ -79,6 +130,7 @@ export default {
   },
   setup(props) {
     //data
+    const store = useStore();
     const colorSelected = ref({});
     const sizeSelected = ref();
 
@@ -86,6 +138,11 @@ export default {
     const swatchColor = ref(null);
     // ref id="variant-swatch-1"
     const swatchSize = ref(null);
+
+    //add to cart
+    function addToCart() {
+      store.dispatch("setAddCartSuccess", true, {});
+    }
 
     function isSoldOutBySwatch(color) {
       let quantity = 0;
@@ -157,6 +214,9 @@ export default {
       );
     }
 
+    // minusQuantity
+    function minusQuantity() {}
+
     onMounted(() => {
       if (props.colors[0]) {
         selectSwatch(props.colors[0]);
@@ -196,13 +256,15 @@ export default {
       sizeSelected,
       selectSize,
       isSoldOutBySize,
+      minusQuantity,
+      addToCart,
     };
   },
 };
 </script>
 <style scoped>
 .swatch {
-  padding: 10px 0;
+  padding: 15px 0;
   width: 100%;
   float: left;
   border-bottom: 1px dotted #dfe0e1;
@@ -231,7 +293,7 @@ export default {
   vertical-align: bottom;
 }
 .swatch-element.soldout {
-  opacity: 0.5;
+  opacity: 0.4;
 }
 .swatch input {
   display: none;
@@ -342,5 +404,77 @@ export default {
 }
 .swatch-element label.sd img.img-check {
   display: block;
+}
+.quantity-area {
+  float: left;
+  width: 135px;
+  display: flex;
+  margin-right: 15px;
+}
+.quantity-area .qty-btn {
+  background: #fff;
+  float: left;
+  border: 1px solid #e1e1e1;
+  cursor: pointer;
+  font-weight: 600;
+  outline: none;
+  height: 45px;
+  width: 45px;
+  text-align: center;
+  border-radius: 0;
+  font-size: 20px;
+  color: black;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: unset;
+}
+.quantity-area .quantity-selector {
+  background: #fff;
+  font-weight: 600;
+  height: 45px;
+  text-align: center;
+  width: 45px;
+  border: 1px solid #e1e1e1;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  float: left;
+  -webkit-appearance: none;
+  font-size: 15px;
+  color: black;
+  padding: 0;
+}
+.wrap-addcart {
+  flex: 1;
+}
+.row-flex {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px;
+}
+.row-flex .add-to-cart-style-qv,
+.row-flex .add-to-cart-style,
+.row-flex .buynow-style {
+  background: var(--bgshop);
+  color: #fff;
+  height: 45px;
+  width: calc(50% - 15px);
+  flex: 0 0 calc(50% - 15px);
+  margin-right: 15px;
+  display: block;
+  border: 1px solid var(--bgshop);
+  max-width: 250px;
+}
+.row-flex .add-to-cart-style-qv span,
+.row-flex .add-to-cart-style span,
+.row-flex .buynow-style span {
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+.row-flex .buynow-style {
+  background: transparent;
+  color: var(--bgshop);
 }
 </style>

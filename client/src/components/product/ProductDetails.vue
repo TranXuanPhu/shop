@@ -85,6 +85,67 @@
             <div class="row"></div>
           </div>
         </div>
+        <div
+          class="col-md-12 col-sm-12 col-xs-12 order-mb-4 mg-top-30 mg-top-0-mb"
+        >
+          <div class="product-description-tab">
+            <div class="scroll-nav-tab scroll-tab hidden-xs">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a
+                    class="show"
+                    href="javascript:void(0)"
+                    data-href="#pro-tab-1"
+                    data-toggle="tab"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    <span>Mô tả sản phẩm</span>
+                  </a>
+                </li>
+                <!-- <li role="presentation">
+                  <a
+                    class=""
+                    href="javascript:void(0)"
+                    data-href="#pro-tab-4"
+                    data-toggle="tab"
+                    role="tab"
+                    aria-selected="true"
+                  >
+                    <span>Bình luận</span>
+                  </a>
+                </li> -->
+              </ul>
+            </div>
+            <div class="tab-pane active content-entry">
+              <div class="more-description">
+                <p><strong>ESSENTIAL TEE 2022</strong></p>
+                <ul>
+                  <li><p>Kích thước: M | L | XL&nbsp;&nbsp;</p></li>
+                  <li><p>Chất liệu: 100% Cotton&nbsp;2 chiều</p></li>
+                  <li><p>Chi tiết được thêu</p></li>
+                  <li>
+                    <p>
+                      Khả năng chống tia UV cao gấp đôi tiêu chuẩn thông hành
+                    </p>
+                  </li>
+                  <li><p>Không chứa hóa chất độc có hại cho sức khỏe</p></li>
+                </ul>
+                <p>
+                  Dòng sản phẩm #99K đã quay trở lại với chất lượng nâng cấp
+                  vượt trội về chất lượng.
+                </p>
+                <p>
+                  Vẫn mang xu hướng tối giản, chú trọng những chi tiết thêu và
+                  màu sắc của áo. 2022, chúng ta không thể mãi nhàm chán với
+                  những chiếc áo trắng - đen. Trải nghiệm những điều mới mẻ thôi
+                  nào!!!
+                </p>
+                <p>Shopee: heyyoustudio.vn</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -94,9 +155,10 @@ import { Splide, SplideSlide } from "@splidejs/vue-splide";
 import { onMounted, ref } from "vue";
 import axios from "axios";
 import { useRoute } from "vue-router";
+import { useStore } from "vuex";
 import url from "../../api/url.js";
-import { removeVietnameseTones, toMoneyString } from "../../utils/utils.js";
-import SelectSwatchTemplate from "../SelectSwatchTemplate.vue";
+import { removeVietnameseTones, toMoneyString } from "../../helpers/utils.js";
+import SelectSwatchTemplate from "./SelectSwatchTemplate.vue";
 export default {
   name: "product-details",
   components: {
@@ -106,6 +168,7 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const store = useStore();
     const main = ref(null);
     const thumbs = ref(null);
     const slides = ref([]);
@@ -158,6 +221,7 @@ export default {
     });
 
     async function getProduct() {
+      store.dispatch("setLoading", true);
       try {
         const response = await axios.get(
           `${url.products}/${route.params.slug}`
@@ -172,10 +236,11 @@ export default {
         slides.value = [...imagesTmp, ...product.value.images];
 
         // console.log("product.value", slides.value);
-
+        store.dispatch("setLoading", false);
         console.log(product.value);
       } catch (error) {
         console.error("getProduct", error);
+        store.dispatch("setLoading", false);
       }
     }
     console.log(main.value);
@@ -241,5 +306,62 @@ export default {
 }
 #product-template .available-pro .status {
   color: #000000;
+}
+#product-template .product-description-tab .nav {
+  border-bottom: 1px solid #e4e7e6;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 35px;
+  /* float: left; */
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+#product-template .product-description-tab .nav li.active,
+#product-template .product-description-tab .nav li:hover {
+  border-top: 3px solid #000;
+}
+#product-template .product-description-tab .nav li {
+  background: #f7f7fb;
+  margin: 0 -1px 0 0;
+  float: left;
+  position: relative;
+  display: block;
+}
+#product-template .product-description-tab .nav li a {
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  margin: 0;
+  border: 1px solid #e4e7e6;
+  border-bottom: 0;
+  padding: 12px 15px 10px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  display: block;
+  line-height: 1.42857143;
+}
+#product-template .product-description-tab .nav li.active a,
+#product-template .product-description-tab .nav li:hover a {
+  border: 1px solid #e4e7e6;
+  border-width: 0 1px;
+  color: #000;
+  padding-bottom: 11px;
+  padding-top: 10px;
+  margin-bottom: -1px;
+  cursor: pointer;
+  background-color: #fff;
+}
+.content-entry p {
+  line-height: 21px;
+  margin-bottom: 15px;
 }
 </style>

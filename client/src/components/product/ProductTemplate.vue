@@ -59,7 +59,7 @@
   </div>
 </template>
 <script>
-import { toMoneyString } from "../../utils/utils.js";
+import { toMoneyString } from "../../helpers/utils.js";
 export default {
   name: "product-template",
   props: {

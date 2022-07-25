@@ -23,9 +23,10 @@
                 <router-link :to="{ name: 'Home' }"> TRANG CHỦ </router-link>
               </li>
               <li class=" ">
-                <a href="/collections/allitems">
-                  SHOP<i class="fa-chevron-down" aria-hidden="true"></i
-                ></a>
+                <a href="#">
+                  SHOP<i class="fa-chevron-down" aria-hidden="true"></i>
+                </a>
+                <a href="/collections/allitems"> </a>
 
                 <div class="sub_top_menu">
                   <ul class="sub_menu_dropdown">
@@ -85,9 +86,11 @@
                   </a>
                 </li>
                 <li class="list-inline-item mr-0 hidden-xs hidden-sm">
-                  <a
-                    href="/account/"
-                    data-original-title="Hi, Phú Trần Xuân"
+                  <router-link
+                    :to="{ name: isLoggedIn ? 'Account' : 'Login' }"
+                    :data-original-title="
+                      isLoggedIn ? loggedUser?.fullName : 'Đăng nhập'
+                    "
                     class="login"
                     data-tooltip="tooltip"
                   >
@@ -97,7 +100,7 @@
                       src="//theme.hstatic.net/200000031420/1000879437/14/user-account.svg?v=28"
                       alt="Tài khoản"
                     />
-                  </a>
+                  </router-link>
                 </li>
                 <li class="list-inline-item mr-0">
                   <a
@@ -140,9 +143,16 @@
   </header>
 </template>
 <script>
+import { computed } from "vue";
+import { useStore } from "vuex";
 export default {
   name: "navigation-template",
-  setup() {},
+  setup() {
+    const store = useStore();
+    const isLoggedIn = computed(() => store.getters["user/getStatusLoggedIn"]);
+    const loggedUser = computed(() => store.getters["user/getLoggedUser"]);
+    return { isLoggedIn, loggedUser };
+  },
 };
 </script>
 <style scoped>
@@ -322,5 +332,37 @@ export default {
   text-align: center;
   right: -8px;
   bottom: 12px;
+}
+a[data-tooltip="tooltip"]:hover:before {
+  border: solid;
+  border-color: transparent #be000000 #333 transparent;
+  border-width: 6px 6px 6px 6px;
+  content: "";
+  left: calc(50% - 6px);
+  bottom: -5px;
+  position: absolute;
+}
+a[data-tooltip="tooltip"]:hover:after {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: center;
+  justify-content: center;
+  background: #333;
+  border-radius: 5px;
+  color: #fff;
+  content: attr(data-original-title);
+  margin: 0;
+  font-size: 13px;
+  padding: 0;
+  min-width: 80px;
+  width: max-content;
+  padding: 0 5px;
+  height: 30px;
+  line-height: 30px;
+  left: 50%;
+  transform: translatex(-50%);
+  position: absolute;
+  top: auto;
+  bottom: -35px;
 }
 </style>

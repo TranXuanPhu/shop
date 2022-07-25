@@ -1,23 +1,38 @@
 <template>
-  <main v-if="!isLoading">
+  <main>
     <NavigationHeader />
-    <router-view />
+    <LoadingTemplate v-if="isLoading" />
+    <router-view v-show="!isLoading" />
+    <ErrorTemplate v-if="isModalError" />
+    <SuccessTemplate v-if="isModalSuccess" />
   </main>
-  <div v-if="isLoading">
-    <h1>loading ......</h1>
-  </div>
 </template>
 
 <script>
-import { ref } from "vue";
+//import { ref } from "vue";
+import { useStore } from "vuex";
 import NavigationHeader from "./components/NavigationHeader.vue";
+import LoadingTemplate from "./views/LoadingTemplate.vue";
+import ErrorTemplate from "./components/modal/Error.vue";
+import SuccessTemplate from "./components/modal/Success.vue";
 import "@splidejs/vue-splide/css";
+import { computed } from "vue";
 export default {
   name: "App",
-  components: { NavigationHeader },
+  components: {
+    NavigationHeader,
+    LoadingTemplate,
+    ErrorTemplate,
+    SuccessTemplate,
+  },
   setup() {
-    const isLoading = ref(false);
-    return { isLoading };
+    const store = useStore();
+
+    const isLoading = computed(() => store.getters["getIsLoading"]);
+    const isModalError = computed(() => store.getters["getIsModalError"]);
+    const isModalSuccess = computed(() => store.getters["getIsModalSuccess"]);
+
+    return { isLoading, isModalError, isModalSuccess };
   },
 };
 </script>
