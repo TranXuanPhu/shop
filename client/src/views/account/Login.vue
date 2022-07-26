@@ -49,13 +49,14 @@
 import { validate } from "../../const/validate.js";
 import { useStore } from "vuex";
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 export default {
   name: "login-page",
   setup() {
     //data
     const store = useStore();
     const router = useRouter();
+    const route = useRoute();
     const isLoading = ref(true);
 
     //method
@@ -71,7 +72,7 @@ export default {
           console.log("user", user);
 
           router.push({
-            name: "Home",
+            path: route.query.redirect || "Home",
           });
         })
         .catch((error) => {

@@ -26,7 +26,6 @@
                 <a href="#">
                   SHOP<i class="fa-chevron-down" aria-hidden="true"></i>
                 </a>
-                <a href="/collections/allitems"> </a>
 
                 <div class="sub_top_menu">
                   <ul class="sub_menu_dropdown">

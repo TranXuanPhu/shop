@@ -1,8 +1,9 @@
 <template>
   <main>
     <NavigationHeader />
-    <LoadingTemplate v-if="isLoading" />
-    <router-view v-show="!isLoading" />
+    <LoadingTemplate v-if="false" />
+    <router-view v-show="true" />
+    <NavigationFooter />
     <ErrorTemplate v-if="isModalError" />
     <SuccessTemplate v-if="isModalSuccess" />
   </main>
@@ -12,6 +13,7 @@
 //import { ref } from "vue";
 import { useStore } from "vuex";
 import NavigationHeader from "./components/NavigationHeader.vue";
+import NavigationFooter from "./components/NavigationFooter.vue";
 import LoadingTemplate from "./views/LoadingTemplate.vue";
 import ErrorTemplate from "./components/modal/Error.vue";
 import SuccessTemplate from "./components/modal/Success.vue";
@@ -21,6 +23,7 @@ export default {
   name: "App",
   components: {
     NavigationHeader,
+    NavigationFooter,
     LoadingTemplate,
     ErrorTemplate,
     SuccessTemplate,
@@ -39,6 +42,7 @@ export default {
 
 <style>
 main {
+  background: #f8f8f8;
   padding-top: var(--height-head);
   min-height: 60.5vh;
 }

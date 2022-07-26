@@ -131,8 +131,14 @@ strong {
 .pd-top-60 {
   padding-top: 60px;
 }
+.mg-top-50 {
+  margin-top: 50px;
+}
 .mg-top-30 {
   margin-top: 30px;
+}
+.mg-bottom-15 {
+  margin-bottom: 15px;
 }
 .row-left-list {
   margin-left: -15px;
@@ -145,6 +151,10 @@ strong {
   flex-direction: column;
   outline: none;
 }
+.mg-bottom-15 {
+  margin-bottom: 15px;
+}
+
 /* --------------- formkit ----------------- */
 .formkit-fieldset,
 .formkit-wrapper {

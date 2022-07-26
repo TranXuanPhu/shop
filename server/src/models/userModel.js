@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'carts',
   },
-  wishList: {
+  wishListId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'wishLists',
   },

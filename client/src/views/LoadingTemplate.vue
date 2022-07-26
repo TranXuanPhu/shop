@@ -24,6 +24,7 @@ export default {
   align-items: center;
   justify-content: center;
   z-index: 100;
+  background-color: #fff;
 }
 
 .gooey {
