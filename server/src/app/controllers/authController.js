@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
-const userModel = require('../../models/userModel.js');
+const userModel = require('../../models/user/userModel.js');
+const userController = require('./user/userController.js');
 
 const decodeToken = async (token, secretKey) => {
   return await promisify(jwt.verify)(token, secretKey);
@@ -73,6 +74,7 @@ exports.login = async (req, res, next) => {
         $or: [{ email: userNameLower }, { userName: userNameLower }],
       })
       .select('+password')
+      .populate({ path: 'addresses' })
       .exec();
 
     if (user) {
@@ -84,7 +86,10 @@ exports.login = async (req, res, next) => {
         //chưa có refresh token trong data thì tạo mới
         if (!user.refreshToken) {
           const refreshToken = generateRefreshToken(user);
-          userController.updateRefreshToken(userName, refreshToken);
+          user.refreshToken = userController.updateRefreshToken(
+            userName,
+            refreshToken
+          );
         }
         createSendToken(user, user.refreshToken, 201, req, res);
       }
@@ -97,6 +102,72 @@ exports.login = async (req, res, next) => {
   } catch (error) {
     console.error('exports.login: ', error);
     res.status(401).send({ message: 'Không thể xác thực, hãy thử lại.' });
+  }
+
+  next();
+};
+
+exports.isAuth = async (req, res, next) => {
+  const token =
+    req.body.token || req.query.token || req.headers['x-access-token'];
+
+  // decode token
+  if (token) {
+    //console.log('access token:', token);
+    try {
+      const decoded = await decodeToken(token, process.env.JWT_SECRET);
+      const user = await userModel.findOne({ userName: decoded.userName });
+      if (!user) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Tài khoản không tồn tại.' });
+      }
+      req.user = user;
+      //  console.log('decoded', decoded);
+    } catch (error) {
+      console.log('isAuth - error:', error);
+      return res
+        .status(401)
+        .send('Bạn không có quyền truy cập vào tính năng này!');
+    }
+  } else return res.status(401).send('Không tìm thấy access token!');
+
+  next();
+};
+exports.refreshToken = async (req, res, next) => {
+  const { refreshToken } = req.body;
+  console.log('refreshToken', refreshToken);
+  if (!refreshToken) {
+    return res.status(401).send('Không tìm thấy refresh token!');
+  }
+  try {
+    const decoded = await decodeToken(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET
+    );
+    console.log('decoded', decoded);
+    const user = await userModel.findOne({ userName: decoded.userName });
+    if (!user) {
+      return res
+        .status(401)
+        .send('Tài khoản không tồn tại, hãy đăng nhập lại!');
+    }
+    //check refresh token in user database
+    if (user.refreshToken !== refreshToken) {
+      return res
+        .status(401)
+        .send('refreshToken không tồn tại, hãy đăng nhập lại!');
+    }
+    console.log('refreshToken: lấy accesstoken thành công!');
+    // create access token
+    createSendToken(user, refreshToken, 200, req, res);
+  } catch (error) {
+    console.log('refreshToken - error:', error);
+    return res
+      .status(401)
+      .send(
+        'refresh token không đúng cấu trúc hoặc hết hạn, hãy đăng nhập lại!'
+      );
   }
 
   next();

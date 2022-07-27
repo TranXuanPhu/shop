@@ -72,7 +72,7 @@ export default {
           console.log("user", user);
 
           router.push({
-            path: route.query.redirect || "Home",
+            path: route.query.redirect || "/",
           });
         })
         .catch((error) => {

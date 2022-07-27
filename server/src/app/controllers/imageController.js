@@ -1,5 +1,5 @@
 const fs = require('fs');
-const imageModel = require('../../models/imageModel.js');
+const imageModel = require('../../models/product/imageModel.js');
 
 //trả về arr id đã tạo
 exports.createImages = async (req) => {

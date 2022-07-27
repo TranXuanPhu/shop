@@ -36,11 +36,11 @@ class AccountService {
         console.log("account/refresh thành công:", response);
         const user = response.data.user;
         tokenService.updateLocalAccessToken(user.accessToken);
-        return user.accessToken;
+        return Promise.resolve(user.accessToken);
       })
       .catch((error) => {
         console.error("account/refresh loi roi: ", error);
-        return error;
+        return Promise.reject(error);
       });
   }
 }

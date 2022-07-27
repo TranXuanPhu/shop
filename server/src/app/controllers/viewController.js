@@ -1,8 +1,10 @@
-const productModel = require('../../models/productModel.js');
+const productModel = require('../../models/product/productModel.js');
 
 exports.getOverView = async (req, res, next) => {
+  console.log('getOverView: get all products');
   try {
     const allProducts = await productModel.find({});
+    console.log('getOverView: done!!');
     res.status(200).json({ products: allProducts });
   } catch (error) {
     console.error('getOverView', error);

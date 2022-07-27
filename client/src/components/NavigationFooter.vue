@@ -11,8 +11,8 @@
               <p>Heyyou! - Thương hiệu quốc dân</p>
               <ul>
                 <li>
-                  <i class="fa fa-map-marker" aria-hidden="true"></i> Hệ thống
-                  cửa hàng <br />
+                  <i class="fa-solid fa-location-dot" aria-hidden="true"></i> Hệ
+                  thống cửa hàng <br />
                   TP Hồ Chí Minh: <br />
                   - Bình Thạnh: 115-117 đường Võ Oanh, phường 25 <br />
                   - Thủ Đức: 57 đường số 10, khu phố 4, phường Tam Bình <br />

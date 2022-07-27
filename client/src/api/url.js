@@ -6,5 +6,6 @@ const url = {
   register: "account/register",
   login: "account/login",
   refreshtoken: "account/refreshtoken",
+  addresses: "account/addresses",
 };
 export default url;

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const sizeModel = require('../../models/sizeModel.js');
+const sizeModel = require('../../models/product/sizeModel.js');
 
 exports.createSize = async (name, quantity) => {
   try {

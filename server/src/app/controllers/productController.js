@@ -1,5 +1,5 @@
 const fs = require('fs');
-const productModel = require('../../models/productModel.js');
+const productModel = require('../../models/product/productModel.js');
 const imageController = require('./imageController.js');
 const sizeController = require('./sizeController.js');
 const colorController = require('./colorController.js');

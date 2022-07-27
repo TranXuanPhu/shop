@@ -1,5 +1,5 @@
 <template>
-  <div id="template-account" class="mg-top-50 pd-bottom-30">
+  <div id="template-account" class="mg-top-50 pd-bottom-30 contact-form-warp">
     <div class="container">
       <div class="row d-flex">
         <div
@@ -8,10 +8,12 @@
           <div class="AccountSidebar">
             <div class="account-left-header">
               <div class="user-account">
-                <div class="user-acc-logo" data-color="P">PT</div>
+                <div class="user-acc-logo" data-color="P">
+                  {{ getFirstCharacter(loggedUser?.fullName) }}
+                </div>
                 <div class="user-account">
-                  <h4 class="user-account-name">Phú Trần Xuân</h4>
-                  <div class="user-account-email">xuanphu821@gmail.com</div>
+                  <h4 class="user-account-name">{{ loggedUser?.fullName }}</h4>
+                  <div class="user-account-email">{{ loggedUser?.email }}</div>
                 </div>
               </div>
             </div>
@@ -23,7 +25,9 @@
           </div>
         </div>
         <div class="col-xs-12 col-sm-9 col-md-9 item-right mg-bottom-15">
-          <router-view></router-view>
+          <div class="bg-while pd-15 border-5-radius">
+            <router-view></router-view>
+          </div>
         </div>
       </div>
     </div>
@@ -32,11 +36,22 @@
 <script>
 import LeftHeaderTemplate from "../../components/account/LeftHeader.vue";
 import { accountContent } from "../../const/index.js";
+import { useStore } from "vuex";
+import { computed } from "vue";
 export default {
   name: "account-template",
   components: { LeftHeaderTemplate },
   setup() {
-    return { accountContent };
+    const store = useStore();
+    function getFirstCharacter(fullName) {
+      return fullName
+        .split(" ")
+        .map((element) => element.charAt(0).toUpperCase())
+        .join("");
+    }
+
+    const loggedUser = computed(() => store.getters["user/getLoggedUser"]);
+    return { accountContent, getFirstCharacter, loggedUser };
   },
 };
 </script>
@@ -104,5 +119,9 @@ export default {
 }
 #template-account .item-left .AccountSidebar .AccountContent {
   margin-top: 40px;
+}
+
+.item-right > div {
+  height: 100%;
 }
 </style>

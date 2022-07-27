@@ -128,6 +128,9 @@ strong {
 .pd-top-30 {
   padding-top: 30px;
 }
+.pd-top-50 {
+  padding-top: 50px;
+}
 .pd-top-60 {
   padding-top: 60px;
 }
@@ -154,7 +157,89 @@ strong {
 .mg-bottom-15 {
   margin-bottom: 15px;
 }
+.mg-bottom-10 {
+  margin-bottom: 10px;
+}
+.d-flex-center {
+  align-items: center;
+}
+.bg-while {
+  background: #fff;
+}
 
+.pd-15 {
+  padding: 15px;
+}
+
+table {
+  width: 100%;
+  border-spacing: 0;
+}
+.list-infomation td {
+  border: none;
+}
+strong {
+  font-weight: 700;
+}
+table tr td,
+table tr th {
+  padding: 10px;
+  text-align: left;
+}
+.btn {
+  padding: 10px 30px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
+  touch-action: manipulation;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  z-index: 1;
+  border-radius: 3px;
+  border: 1px solid;
+}
+.contact-form-warp .btn {
+  border: 1px solid #000000;
+  outline: none;
+  background: #000000;
+  outline: none;
+}
+.btn:not(:disabled):not(.disabled) {
+  cursor: pointer;
+}
+
+/* -----------------address form----------------- */
+button,
+input,
+optgroup,
+select,
+textarea {
+  color: #000;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  border-radius: 0px;
+}
+
+.input-group .input-group-addon {
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  text-align: center;
+  border-radius: 0;
+  color: #dad9d9;
+  background-color: #ebebeb;
+  border-color: #ebebeb;
+  font-size: 18px;
+}
+.input-group {
+  margin: 15px 0px;
+}
 /* --------------- formkit ----------------- */
 .formkit-fieldset,
 .formkit-wrapper {

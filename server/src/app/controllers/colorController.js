@@ -1,5 +1,5 @@
 const fs = require('fs');
-const colorModel = require('../../models/colorModel.js');
+const colorModel = require('../../models/product/colorModel.js');
 
 exports.createColor = async (name, idImage, idSizes) => {
   try {

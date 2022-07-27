@@ -11,7 +11,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./assets/styles/global.css";
 import axiosSetup from "./api/axios/axiosClient.js";
 
-axiosSetup();
+axiosSetup(store, router);
 
 const app = createApp(App);
 app.component("font-awesome-icon", FontAwesomeIcon);

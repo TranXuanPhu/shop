@@ -53,6 +53,7 @@
                 name="password"
                 validation="required|length:8|matches:/[0-9]/"
                 validation-visibility="dirty"
+                placeholder="********"
                 :validation-messages="{
                   required: validate.checkRequired('Mật khẩu'),
                   matches: validate.matches,
@@ -65,6 +66,7 @@
                 label="Nhập lại mật khẩu"
                 validation="confirm"
                 validation-label="password confirmation"
+                placeholder="********"
                 validation-visibility="dirty"
                 :validation-messages="{
                   confirm: validate.passwordConfirm,

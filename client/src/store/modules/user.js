@@ -1,4 +1,5 @@
 import AccountService from "../../api/services/account.service.js";
+import UserService from "../../api/services/user.service.js";
 import tokenService from "../../api/services/token.service.js";
 
 const userLocal = tokenService.getUser();
@@ -55,12 +56,25 @@ const actions = {
   },
   async refreshToken({ state, commit }) {
     try {
-      await AccountService.refreshToken(state.refreshToken).then((response) => {
+      AccountService.refreshToken(state.refreshToken).then((response) => {
         console.log("refreshToken", response);
         commit("setAccessToken", response);
       });
     } catch (error) {
       console.error("refreshToken", error);
+      commit("clearUserData");
+    }
+  },
+  createAddresses({ commit }, data) {
+    try {
+      UserService.createAddresses(data).then((response) => {
+        console.log("createAddresses", response);
+        commit("createAddresses", response);
+        return Promise.resolve(response);
+      });
+    } catch (error) {
+      console.error("createAddresses", error);
+      return Promise.reject(error);
     }
   },
 };

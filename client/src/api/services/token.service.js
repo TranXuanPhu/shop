@@ -12,6 +12,11 @@ class TokenService {
     user.accessToken = token;
     localStorage.setItem("user", JSON.stringify(user));
   }
+  updateLoggedUser(loggedUser) {
+    let user = JSON.parse(localStorage.getItem("user"));
+    user.loggedInUser = loggedUser;
+    localStorage.setItem("user", JSON.stringify(user));
+  }
   getUser() {
     return JSON.parse(localStorage.getItem("user"));
   }
@@ -19,6 +24,7 @@ class TokenService {
     console.log(JSON.stringify(user));
     localStorage.setItem("user", JSON.stringify(user));
   }
+
   removeUser() {
     localStorage.removeItem("user");
   }
