@@ -1,117 +1,106 @@
 <template>
-  <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6 pt20">
-    <div href="#" class="add-new-address" @click="toggleShow()">
-      Nhập địa chỉ mới
-    </div>
-    <div id="add_address" class="customer_address edit_address">
-      <div id="address_form_new">
-        <input name="form_type" type="hidden" value="customer_address" />
-        <input name="utf8" type="hidden" value="✓" />
+  <div ref="refAddress" class="customer_address edit_address" v-show="isShow">
+    <div id="address_form_new">
+      <input name="form_type" type="hidden" value="customer_address" />
+      <input name="utf8" type="hidden" value="✓" />
 
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-user"></i></span>
-          <input
-            type="text"
-            id="address_first_name_new"
-            class="form-control textbox"
-            name="firstName"
-            size="40"
-            placeholder="Họ"
-            v-model="firstName"
-          />
-        </div>
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-user"></i></span>
-          <input
-            type="text"
-            id="address_last_name_new"
-            class="form-control textbox"
-            name="lastName"
-            size="40"
-            placeholder="Tên"
-            v-model="lastName"
-          />
-        </div>
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-home"></i></span>
-          <input
-            type="text"
-            for="address_company_new"
-            class="form-control textbox"
-            name="company"
-            v-model="company"
-            placeholder="Công ty"
-          />
-        </div>
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-home"></i></span>
-          <input
-            type="text"
-            id="address_address1_new"
-            class="form-control textbox"
-            name="address"
-            v-model="address"
-            placeholder="Địa chỉ "
-          />
-        </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input
+          type="text"
+          id="address_first_name_new"
+          class="form-control textbox"
+          name="firstName"
+          size="40"
+          placeholder="Họ"
+          v-model="firstName"
+        />
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+        <input
+          type="text"
+          id="address_last_name_new"
+          class="form-control textbox"
+          name="lastName"
+          size="40"
+          placeholder="Tên"
+          v-model="lastName"
+        />
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-home"></i></span>
+        <input
+          type="text"
+          for="address_company_new"
+          class="form-control textbox"
+          name="company"
+          v-model="company"
+          placeholder="Công ty"
+        />
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-home"></i></span>
+        <input
+          type="text"
+          id="address_address1_new"
+          class="form-control textbox"
+          name="address"
+          v-model="address"
+          placeholder="Địa chỉ "
+        />
+      </div>
 
-        <div class="input-group">
-          <span class="input-group-addon"
-            ><i class="fa fa-map-marker"></i
-          ></span>
-          <input
-            type="text"
-            id="address_address1_new"
-            class="form-control textbox"
-            name="province"
-            v-model="province"
-            placeholder="Tỉnh"
-          />
-        </div>
-        <div class="input-group">
-          <span class="input-group-addon"
-            ><i class="fa fa-map-marker"></i
-          ></span>
-          <input
-            type="text"
-            id="address_address1_new"
-            class="form-control textbox"
-            name="country"
-            v-model="country"
-            placeholder="Nước"
-          />
-        </div>
-        <div class="input-group">
-          <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-          <input
-            type="text"
-            id="address_phone_new"
-            class="form-control textbox"
-            name="phone"
-            v-model="phone"
-            placeholder="Số điện thoại"
-          />
-        </div>
-        <div class="mg-bottom-10">
-          <input
-            type="checkbox"
-            id="address_default_address_new"
-            name="default"
-            v-model="isDefault"
-          />
-          Đặt làm địa chỉ mặc định.
-        </div>
-        <div class="action_bottom">
-          <input
-            class="btn btn-primary"
-            value="Thêm mới"
-            type="submit"
-            @click="handleAddress()"
-          />
-          <span class="" style="margin-left: 10px"
-            >hoặc <a href="#">Hủy</a></span
-          >
-        </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
+        <input
+          type="text"
+          id="address_address1_new"
+          class="form-control textbox"
+          name="province"
+          v-model="province"
+          placeholder="Tỉnh"
+        />
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
+        <input
+          type="text"
+          id="address_address1_new"
+          class="form-control textbox"
+          name="country"
+          v-model="country"
+          placeholder="Nước"
+        />
+      </div>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+        <input
+          type="text"
+          id="address_phone_new"
+          class="form-control textbox"
+          name="phone"
+          v-model="phone"
+          placeholder="Số điện thoại"
+        />
+      </div>
+      <div class="mg-bottom-10">
+        <input
+          type="checkbox"
+          id="address_default_address_new"
+          name="default"
+          v-model="isDefault"
+        />
+        Đặt làm địa chỉ mặc định.
+      </div>
+      <div class="action_bottom">
+        <input
+          class="btn btn-primary"
+          :value="addressPrev ? 'Cập nhật' : 'Thêm mới'"
+          type="submit"
+          @click="handleAddress()"
+        />
+        <span class="" style="margin-left: 10px">hoặc <a href="#">Hủy</a></span>
       </div>
     </div>
   </div>
@@ -122,24 +111,22 @@ export default {
   name: "address-form-template",
   props: {
     addressPrev: { type: Object },
+    isShow: { type: Boolean },
   },
   setup(props, { emit }) {
-    const firstName = ref(props.firstName);
-    const lastName = ref(props.lastName);
-    const company = ref(props.company);
-    const address = ref(props.address);
-    const province = ref(props.province);
-    const country = ref(props.country);
-    const phone = ref(props.phone);
-    const isDefault = ref(props.default);
-    const isShow = ref(false);
-    function toggleShow() {
-      isShow.value = !isShow.value;
-      const display = isShow.value ? "display: none;" : "";
-      document.getElementById("add_address").style = display;
-    }
+    const refAddress = ref();
+    const firstName = ref(props.addressPrev?.firstName);
+    const lastName = ref(props.addressPrev?.lastName);
+    const company = ref(props.addressPrev?.company);
+    const address = ref(props.addressPrev?.address);
+    const province = ref(props.addressPrev?.province);
+    const country = ref(props.addressPrev?.country);
+    const phone = ref(props.addressPrev?.phone);
+    const isDefault = ref(props.addressPrev?.default);
+
     function handleAddress() {
       const data = {
+        _id: props.addressPrev?._id,
         firstName: firstName.value,
         lastName: lastName.value,
         company: company.value,
@@ -154,8 +141,7 @@ export default {
     }
 
     return {
-      isShow,
-      toggleShow,
+      refAddress,
       handleAddress,
       firstName,
       lastName,
@@ -169,14 +155,4 @@ export default {
   },
 };
 </script>
-<style scoped>
-.add-new-address {
-  padding-bottom: 10px;
-  display: inline-block;
-  padding: 10px;
-  background: #000000;
-  color: #fff !important;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-</style>
+<style scoped></style>

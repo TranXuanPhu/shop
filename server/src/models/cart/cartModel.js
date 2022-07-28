@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
 const cartSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'users',
-  },
-  products: [
+  items: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'products',
+      ref: 'itemCarts',
     },
   ],
 });
@@ -17,11 +13,11 @@ cartSchema.pre(/^find/, function (next) {
   if (this.options._recursed) {
     return next();
   }
-  this.populate({ path: 'user products', options: { _recursed: true } });
+  this.populate({ path: 'itemCarts', options: { _recursed: true } });
   this.select('-__v');
   next();
 });
 
 const cart = mongoose.model('carts', cartSchema);
 
-module.exports = color;
+module.exports = cart;

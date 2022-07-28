@@ -170,7 +170,10 @@ strong {
 .pd-15 {
   padding: 15px;
 }
-
+.dt-width-100 {
+  width: 100%;
+  height: auto;
+}
 table {
   width: 100%;
   border-spacing: 0;

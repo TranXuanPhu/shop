@@ -45,9 +45,9 @@ export default {
     const store = useStore();
     function getFirstCharacter(fullName) {
       return fullName
-        .split(" ")
-        .map((element) => element.charAt(0).toUpperCase())
-        .join("");
+        ?.split(" ")
+        ?.map((element) => element.charAt(0).toUpperCase())
+        ?.join("");
     }
 
     const loggedUser = computed(() => store.getters["user/getLoggedUser"]);

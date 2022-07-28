@@ -23,6 +23,7 @@ const getters = {
   getLoggedUser: (state) => state.loggedUser,
   getStatusLoggedIn: (state) => state.status.loggedIn,
   getAccessToken: (state) => state.accessToken,
+  getAddresses: (state) => state.loggedUser.addresses,
 };
 
 //actions
@@ -65,15 +66,36 @@ const actions = {
       commit("clearUserData");
     }
   },
-  createAddresses({ commit }, data) {
+  async createAddresses({ commit }, data) {
     try {
-      UserService.createAddresses(data).then((response) => {
-        console.log("createAddresses", response);
-        commit("createAddresses", response);
-        return Promise.resolve(response);
-      });
+      const responseData = await UserService.createAddresses(data);
+      console.log("createAddresses", responseData);
+      commit("updateLoggedUser", responseData.loggedUser);
+      return Promise.resolve(responseData.loggedUser);
     } catch (error) {
       console.error("createAddresses", error);
+      return Promise.reject(error);
+    }
+  },
+  async updateAddress({ commit }, data) {
+    try {
+      const responseData = await UserService.updateAddress(data);
+      console.log("updateAddress success", responseData);
+      commit("updateLoggedUser", responseData.loggedUser);
+      return Promise.resolve(responseData.loggedUser);
+    } catch (error) {
+      console.error("updateAddress", error);
+      return Promise.reject(error);
+    }
+  },
+  async deleteAddress({ commit }, data) {
+    try {
+      const responseData = await UserService.deleteAddress(data);
+      console.log("deleteAddress success", responseData);
+      commit("updateLoggedUser", responseData.loggedUser);
+      return Promise.resolve(responseData.loggedUser);
+    } catch (error) {
+      console.error("deleteAddress", error);
       return Promise.reject(error);
     }
   },
@@ -90,7 +112,7 @@ const mutations = {
   loginFailure(state) {
     state.refreshToken = "";
     state.accessToken = "";
-    state.loggedInUser = {};
+    state.loggedUser = {};
     state.status.loggedIn = false;
   },
 
@@ -109,8 +131,11 @@ const mutations = {
   clearUserData(state) {
     state.refreshToken = "";
     state.accessToken = "";
-    state.loggedInUser = {};
+    state.loggedUser = {};
     state.status.loggedIn = false;
+  },
+  updateLoggedUser(state, loggedUser) {
+    state.loggedUser = loggedUser;
   },
 };
 

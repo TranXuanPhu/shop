@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, required: true, default: 'user' },
   refreshToken: { type: 'string', required: true },
   addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'addresses' }],
-  cart: {
+  cartId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'carts',
   },
@@ -37,11 +37,11 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre(/^find/, function (next) {
-  // if (this.options._recursed) {
-  //   return next();
-  // }
+  if (this.options._recursed) {
+    return next();
+  }
   this.find({ active: { $ne: false } })
-    // .populate({ path: 'addresses' }, { addresses: { $exists: true } })
+    .populate({ path: 'addresses' })
     .select('-__v');
 
   next();

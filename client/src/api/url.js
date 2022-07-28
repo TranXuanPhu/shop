@@ -7,5 +7,8 @@ const url = {
   login: "account/login",
   refreshtoken: "account/refreshtoken",
   addresses: "account/addresses",
+
+  //cart
+  cart: "account/cart",
 };
 export default url;

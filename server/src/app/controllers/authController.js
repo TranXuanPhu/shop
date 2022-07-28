@@ -15,12 +15,13 @@ const generateAccessToken = ({ userName }) => {
 
 //refresh token: token het han thi lay lai
 const generateRefreshToken = ({ userName }) => {
+  console.log('generating refresh token - userName:', userName);
   return jwt.sign({ userName }, process.env.JWT_REFRESH_SECRET, {
     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
   });
 };
 const createSendToken = (
-  { fullName, userName, email, role },
+  { fullName, userName, email, role, addresses },
   refreshToken,
   statusCode,
   req,
@@ -38,7 +39,7 @@ const createSendToken = (
     status: 'success',
 
     user: {
-      loggedInUser: { fullName, userName, email, role },
+      loggedInUser: { fullName, userName, email, role, addresses },
       accessToken,
       refreshToken,
     },
@@ -84,14 +85,13 @@ exports.login = async (req, res, next) => {
 
       if (await user.correctPassword(password, user.password)) {
         //chưa có refresh token trong data thì tạo mới
+        let refreshToken;
         if (!user.refreshToken) {
-          const refreshToken = generateRefreshToken(user);
-          user.refreshToken = userController.updateRefreshToken(
-            userName,
-            refreshToken
-          );
-        }
-        createSendToken(user, user.refreshToken, 201, req, res);
+          refreshToken = generateRefreshToken(user);
+          userController.updateRefreshToken(userName, refreshToken);
+        } else refreshToken = user.refreshToken;
+        console.log('user.refreshToken:', refreshToken);
+        createSendToken(user, refreshToken, 201, req, res);
       }
       //
       else res.status(401).send({ password: 'Nhập mật khẩu không chính xác.' });

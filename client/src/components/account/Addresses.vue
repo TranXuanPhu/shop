@@ -1,33 +1,91 @@
 <template>
   <div class="row d-flex">
-    <div class="col-md-6 col-sm-12 col-xs-12">
-      <AddressesDetailTemplate />
+    <div class="col-md-6 col-sm-12 col-xs-12" v-if="addresses">
+      <AddressesDetailTemplate
+        v-for="(address, index) in addresses"
+        :key="index"
+        :address="address"
+        @handleAddress="(data) => updateAddress(data)"
+        @handleDeleteAddress="
+          (addressDelete) => handleDeleteAddress(addressDelete)
+        "
+      />
     </div>
-    <AddressFormTemplate @handleAddress="(data) => createAddress(data)" />
+    <div class="col-md-6 col-sm-12 col-xs-12 col-lg-6 pt20">
+      <div href="#" class="add-new-address" @click="toggleShowNewFormAddress()">
+        Nhập địa chỉ mới
+      </div>
+      <AddressFormTemplate
+        :isShow="isShowNewFormAddress"
+        @handleAddress="(data) => createAddress(data)"
+      />
+    </div>
   </div>
 </template>
 <script>
 import AddressFormTemplate from "./AddressForm.vue";
 import AddressesDetailTemplate from "./AddressesDetail.vue";
 import { useStore } from "vuex";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 export default {
   name: "address-template",
   components: { AddressFormTemplate, AddressesDetailTemplate },
   setup() {
     const store = useStore();
+    const router = useRouter();
+    const addresses = store.getters["user/getAddresses"];
+    const isShowNewFormAddress = ref(false);
+    function toggleShowNewFormAddress() {
+      isShowNewFormAddress.value = !isShowNewFormAddress.value;
+      //const display = isShow.value ? "" : "display: none;";
+      //refAddress.value.style = display;
+    }
     function createAddress(data) {
       console.log("createAddress", data);
       store
         .dispatch("user/createAddresses", data)
         .then((response) => {
           console.log("add_address:", response);
+          router.go();
         })
         .catch((error) => {
           console.error("add_address", error);
         });
     }
+    function updateAddress(data) {
+      console.log("updateAddress", data);
+      store
+        .dispatch("user/updateAddress", data)
+        .then((response) => {
+          console.log("update_address:", response);
+          router.go();
+        })
+        .catch((error) => {
+          console.error("update_address", error);
+        });
+    }
+    function handleDeleteAddress(addressDelete) {
+      console.log("handleDeleteAddress", addressDelete._id);
+      store
+        .dispatch("user/deleteAddress", { _id: addressDelete._id })
+        .then((response) => {
+          console.log("delete_Address:", response);
+          router.go();
+        })
+        .catch((error) => {
+          console.error("delete_Address", error);
+        });
+    }
 
-    return { createAddress };
+    return {
+      isShowNewFormAddress,
+      addresses,
+      createAddress,
+      updateAddress,
+      toggleShowNewFormAddress,
+      handleDeleteAddress,
+    };
   },
 };
 </script>
@@ -57,5 +115,14 @@ export default {
   text-indent: 5px;
   font-size: 13px;
   width: 100%;
+}
+.add-new-address {
+  padding-bottom: 10px;
+  display: inline-block;
+  padding: 10px;
+  background: #000000;
+  color: #fff !important;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 </style>

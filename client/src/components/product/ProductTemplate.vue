@@ -22,7 +22,7 @@
           </button>
         </div>
         <div class="product-icon-action">
-          <div class="add-to-cart">
+          <div class="add-to-cart" @click="addToCart">
             <button
               class="inline-block icon-addcart margin_right_10 box-shadow"
             >
@@ -44,8 +44,13 @@
             <span>{{ toMoneyString(product.price) }}</span>
           </p>
         </div>
-        <ul class="list-variants-img d-flex d-flex-wrap">
-          <li v-for="(color, index) in product.colors" :key="index">
+        <ul class="list-variants-img d-flex d-flex-wrap" ref="swatchColor">
+          <li
+            v-for="(color, index) in product.colors"
+            :key="index"
+            @click="selectSwatch(color)"
+            :data-vhandle="toDataHandlerSwatch(color.name)"
+          >
             <img
               :src="`data:${color.image.img.contentType};base64,${color.image.img.data}`"
               width="260"
@@ -59,7 +64,9 @@
   </div>
 </template>
 <script>
+import { onMounted, ref } from "vue";
 import { toMoneyString } from "../../helpers/utils.js";
+import { removeVietnameseTones } from "../../helpers/utils.js";
 export default {
   name: "product-template",
   props: {
@@ -67,12 +74,60 @@ export default {
       type: Object,
     },
   },
-  setup() {
-    // const image = props.product.colors[0].image;
-    // function getImage(){
-    //     return
-    // }
-    return { toMoneyString };
+  setup(props) {
+    const colorSelected = ref(null);
+    const swatchColor = ref(null);
+    function isSoldOutBySwatch(color) {
+      let quantity = 0;
+      color.sizes.forEach((size) => {
+        quantity += size.quantity;
+      });
+      return quantity <= 0;
+    }
+    function addToCart() {
+      console.log("addToCart:", props.product._id);
+    }
+
+    function toDataHandlerSwatch(colorName) {
+      return (
+        "swatch-" +
+        removeVietnameseTones(colorName).toLowerCase().split(" ").join("-")
+      );
+    }
+    function selectSwatch(color) {
+      //check soldout
+      if (isSoldOutBySwatch(color)) return;
+      //remove class active
+      const labelElements =
+        swatchColor.value.querySelectorAll("li[data-vhandle]");
+      // console.log("selectSwatch", labelElements);
+      labelElements.forEach((element) => {
+        element.classList.remove("active");
+      });
+
+      //add class active
+      const eLi = swatchColor.value.querySelector(
+        `li[data-vhandle='${toDataHandlerSwatch(color.name)}']`
+      );
+      eLi.classList.add("active");
+
+      colorSelected.value = color;
+    }
+    onMounted(() => {
+      if (props.product?.colors[0]) {
+        selectSwatch(props.product.colors[0]);
+      }
+    });
+
+    return {
+      toMoneyString,
+      colorSelected,
+      swatchColor,
+      addToCart,
+      isSoldOutBySwatch,
+      selectSwatch,
+      toDataHandlerSwatch,
+    };
   },
 };
 </script>

@@ -37,11 +37,7 @@ const routes = [
     path: "/products/:slug",
     component: () => import("../components/product/ProductDetails.vue"),
   },
-  // {
-  //   name: "Cart",
-  //   path: "/cart",
-  //   component: () => import("../views/Cart.vue"),
-  // },
+
   {
     name: "Login",
     path: "/account/login",
@@ -61,6 +57,12 @@ const routes = [
   /**
    * path requiring auth
    */
+  {
+    name: "Cart",
+    path: "/cart",
+    component: () => import("../views/Cart.vue"),
+    meta: { requiresAuth: true },
+  },
   {
     name: "NewProduct",
     path: "/products/new",
