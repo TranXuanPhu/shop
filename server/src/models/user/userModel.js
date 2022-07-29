@@ -41,7 +41,7 @@ userSchema.pre(/^find/, function (next) {
     return next();
   }
   this.find({ active: { $ne: false } })
-    .populate({ path: 'addresses' })
+    .populate({ path: 'addresses cartId' })
     .select('-__v');
 
   next();

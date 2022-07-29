@@ -24,6 +24,7 @@ const getters = {
   getStatusLoggedIn: (state) => state.status.loggedIn,
   getAccessToken: (state) => state.accessToken,
   getAddresses: (state) => state.loggedUser.addresses,
+  getTotalItemsCart: (state) => state.loggedUser.totalItemsCart,
 };
 
 //actions

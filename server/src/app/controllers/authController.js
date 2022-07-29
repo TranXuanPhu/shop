@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const userModel = require('../../models/user/userModel.js');
 const userController = require('./user/userController.js');
+const cartController = require('./user/cartController.js');
 
 const decodeToken = async (token, secretKey) => {
   return await promisify(jwt.verify)(token, secretKey);
@@ -20,8 +21,8 @@ const generateRefreshToken = ({ userName }) => {
     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
   });
 };
-const createSendToken = (
-  { fullName, userName, email, role, addresses },
+const createSendToken = async (
+  { fullName, userName, email, role, addresses, cartId },
   refreshToken,
   statusCode,
   req,
@@ -35,11 +36,20 @@ const createSendToken = (
       .send('Tạo access token không thành công, vui lòng thử lại.');
     return;
   }
+
+  // const totalItemsCart = await cartController.getTotalItems(cartId);
+
   res.status(statusCode).json({
     status: 'success',
-
     user: {
-      loggedInUser: { fullName, userName, email, role, addresses },
+      loggedInUser: {
+        fullName,
+        userName,
+        email,
+        role,
+        addresses,
+        // totalItemsCart,
+      },
       accessToken,
       refreshToken,
     },
@@ -91,7 +101,7 @@ exports.login = async (req, res, next) => {
           userController.updateRefreshToken(userName, refreshToken);
         } else refreshToken = user.refreshToken;
         console.log('user.refreshToken:', refreshToken);
-        createSendToken(user, refreshToken, 201, req, res);
+        await createSendToken(user, refreshToken, 201, req, res);
       }
       //
       else res.status(401).send({ password: 'Nhập mật khẩu không chính xác.' });
@@ -160,7 +170,7 @@ exports.refreshToken = async (req, res, next) => {
     }
     console.log('refreshToken: lấy accesstoken thành công!');
     // create access token
-    createSendToken(user, refreshToken, 200, req, res);
+    await createSendToken(user, refreshToken, 200, req, res);
   } catch (error) {
     console.log('refreshToken - error:', error);
     return res

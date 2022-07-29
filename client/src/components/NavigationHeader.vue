@@ -130,7 +130,9 @@
                       src="//theme.hstatic.net/200000031420/1000879437/14/shopping-cart.svg?v=28"
                       alt="Giỏ hàng"
                     />
-                    <span class="js-number-cart number-cart">6</span>
+                    <span class="js-number-cart number-cart">{{
+                      totalItemsCart
+                    }}</span>
                   </a>
                 </li>
               </ul>
@@ -150,7 +152,10 @@ export default {
     const store = useStore();
     const isLoggedIn = computed(() => store.getters["user/getStatusLoggedIn"]);
     const loggedUser = computed(() => store.getters["user/getLoggedUser"]);
-    return { isLoggedIn, loggedUser };
+    const totalItemsCart = computed(
+      () => store.getters["user/getTotalItemsCart"]
+    );
+    return { isLoggedIn, loggedUser, totalItemsCart };
   },
 };
 </script>

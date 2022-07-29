@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 const wishListSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'users',
-  },
   productsId: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,7 +13,7 @@ wishListSchema.pre(/^find/, function (next) {
   if (this.options._recursed) {
     return next();
   }
-  this.populate({ path: 'user products', options: { _recursed: true } });
+  this.populate({ path: 'products', options: { _recursed: true } });
   this.select('-__v');
   next();
 });

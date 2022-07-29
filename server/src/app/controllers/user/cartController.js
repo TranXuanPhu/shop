@@ -1,80 +1,85 @@
 const mongoose = require('mongoose');
 const cartModel = require('../../../models/cart/cartModel.js');
-const itemCartModel = require('../../../models/cart/itemCartModel.js');
 const userModel = require('../../../models/user/userModel.js');
-const userController = require('./userController.js');
-
-const updateItemByIdProduct = async (idCart, idProduct, quantity) => {
+const productModel = require('../../../models/product/productModel.js');
+const getTotalItems = async (cartId) => {
+  const cart = await cartModel.findById(cartId);
+  if (!cart) return 0;
+  return cart.items.reduce(
+    (prevItem, currentItem) => prevItem + currentItem.quantity,
+    0
+  );
+};
+const updateItem = async (cartId, productId, size, quantity) => {
   try {
-    const items = await cartModel
-      .findById(idCart)
-      .populate({ path: 'itemCarts' });
+    let cart = await cartModel.findById(cartId);
 
-    for (const item of items) {
-      if (item.productId === idProduct) {
+    let itemExists = null; //await existsItemInCart(user.cartId, productId);
+    for (const item of cart.items) {
+      if (item.productId?._id.toString() === productId && item.size === size) {
+        item.quantity = Number(item.quantity) + Number(quantity);
+        itemExists = item;
+        break;
       }
     }
+
+    // chưa có productId thì đẩy vào
+    if (!itemExists) {
+      cart.items.push({
+        productId: mongoose.Types.ObjectId(productId),
+        quantity: Number(quantity),
+        size,
+      });
+    }
+    await cart.save();
   } catch (error) {
-    console.error('getIdItemByIdProduct', error);
-    return false;
+    console.error('updateItem:', error);
   }
-};
-const updateItem = async (idItem, quantity) => {
-  return await itemCartModel.findByIdAndUpdate(idItem, { quantity });
 };
 
 exports.addItemToCart = async (req, res, next) => {
   try {
     //kiểm tra productId đã có add vào cart chưa
     // có rồi thì lấy ra thêm quantity
-    let user = await userModel.findById('62e2cb900ae1904a29a00122'); //req.user;
+    let user = await userModel.findById('62e3b2e863d4c6e315005136'); // req.user;
     const productId = req.body.productId;
     const quantity = req.body.quantity;
-    //chưa tạo cart
-    if (!mongoose.isValidObjectId(user?.cartId)) {
-      //create a new itemcart
-      const item = await itemCartModel.create({ productId, quantity });
-      console.log('create itemCartModel', item);
-      const items = [item._id];
-      //tạo mới cartModel, add item vào cartModel
-      let cart = await cartModel.create({ items: items });
+    const size = req.body.size;
 
+    //kiểm tra idproduct gửi lên có tồn tại không
+    const checkProduct = await productModel.findById(productId);
+    if (!checkProduct)
+      return res
+        .status(404)
+        .send('sản phẩm này đã không tồn tại, xin hãy chọn sản phẩm khác.');
+
+    //chưa tạo cart
+    if (!user.cartId) {
+      //create cart
+      let cart = await cartModel.create({
+        items: [
+          {
+            productId: mongoose.Types.ObjectId(productId),
+            quantity: Number(quantity),
+            size,
+          },
+        ],
+      });
       // update ở user
-      user = await userController.updateCartId(user._id, cart._id);
+      user.cartId = cart._id;
+      user = await user.save();
     }
     // đã có cartId thì kiểm tra productId để tạo mới hoặc thêm quantity
-    else {
-      const items = await cartModel
-        .findById(req.user.cartId)
-        .populate({ path: 'itemCarts' });
-      const idExists = false;
-      let idItem = null;
-      for (const item of items) {
-        if (item.productId.toString() === productId) {
-          idItem = item._id;
-          idExists = true;
-          break;
-        }
-      }
-      //tồn tại
-      if (idExists) await updateItem(idItem, quantity);
-      //không tòn tại thì tạo mới itemCartModel, thêm vào cartModel
-      else {
-        const item = await itemCartModel.create({ productId, quantity });
-        let cart = await cartModel.findByIdAndUpdate(use.cartId, {
-          $push: { items: item },
-        });
-      }
-    }
+    //mongoose.isValidObjectId()
+    else await updateItem(user.cartId, productId, size, quantity);
 
-    // let cart = await cartModel.findById(req.user.cartId);
-    // let user = req.user;
-    // // chưa tạo cart thì phải tạo rồi mới thêm mới được
-    // if (!cart) {
-
-    //   user = userController.updateCartId(user._id, cart._id);
-    // }
-    return res.status(201).send('Thêm vào giỏ hàng thành công.');
+    user = await userModel.findById(user._id);
+    const totals = await getTotalItems(user.cartId);
+    return res.status(201).json({
+      message: 'Thêm vào giỏ hàng thành công.',
+      user: user,
+      totalItemsCart: totals,
+    });
   } catch (error) {
     console.log('addItemToCart:', error);
     return res.status(404).send('Không thể thêm vào giỏ hàng.');
@@ -82,6 +87,7 @@ exports.addItemToCart = async (req, res, next) => {
 
   next();
 };
+
 exports.getItems = async (req, res, next) => {
   next();
 };
