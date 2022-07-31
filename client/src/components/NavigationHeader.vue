@@ -118,8 +118,8 @@
                   </a>
                 </li>
                 <li class="list-inline-item mr-0">
-                  <a
-                    href="/cart"
+                  <router-link
+                    :to="{ name: 'Cart' }"
                     class="cart js-call-minicart"
                     data-original-title="Giỏ hàng"
                     data-tooltip="tooltip"
@@ -133,7 +133,7 @@
                     <span class="js-number-cart number-cart">{{
                       totalItemsCart
                     }}</span>
-                  </a>
+                  </router-link>
                 </li>
               </ul>
             </div>
@@ -152,9 +152,7 @@ export default {
     const store = useStore();
     const isLoggedIn = computed(() => store.getters["user/getStatusLoggedIn"]);
     const loggedUser = computed(() => store.getters["user/getLoggedUser"]);
-    const totalItemsCart = computed(
-      () => store.getters["user/getTotalItemsCart"]
-    );
+    const totalItemsCart = computed(() => store.getters["cart/getTotalItems"]);
     return { isLoggedIn, loggedUser, totalItemsCart };
   },
 };

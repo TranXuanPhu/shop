@@ -73,6 +73,12 @@
                 }"
               />
             </FormKit>
+            <div style="text-align: center; padding-top: 12px">
+              <router-link :to="{ name: 'Register' }">
+                <i class="fa fa-reply"></i>
+                Trở về trang chủ
+              </router-link>
+            </div>
           </div>
         </div>
       </div>

@@ -176,7 +176,9 @@ strong {
 }
 table {
   width: 100%;
+  border-collapse: collapse;
   border-spacing: 0;
+  font-size: 1em;
 }
 .list-infomation td {
   border: none;
@@ -440,6 +442,7 @@ button.formkit-input.button {
   margin-top: -21px;
   width: 6.5em;
   background: white;
+  max-width: 13.5em;
 }
 .formkit-fieldset > .formkit-help {
   margin-top: 5px;

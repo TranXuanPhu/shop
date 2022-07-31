@@ -1,5 +1,6 @@
 const fs = require('fs');
 const productModel = require('../../models/product/productModel.js');
+const sizeModel = require('../../models/product/sizeModel.js');
 const imageController = require('./imageController.js');
 const sizeController = require('./sizeController.js');
 const colorController = require('./colorController.js');
@@ -100,3 +101,8 @@ exports.getProductBySlug = async (req, res, next) => {
     console.log('getProductBySlug:', error);
   }
 };
+
+// exports.getQuantityProductBySize = async (sizeId) => {
+//   const size = await sizeModel.findById(sizeId);
+//   return size.quantity || 0;
+// };

@@ -67,6 +67,7 @@
 import { onMounted, ref } from "vue";
 import { toMoneyString } from "../../helpers/utils.js";
 import { removeVietnameseTones } from "../../helpers/utils.js";
+import { useStore } from "vuex";
 export default {
   name: "product-template",
   props: {
@@ -75,7 +76,9 @@ export default {
     },
   },
   setup(props) {
+    const store = useStore();
     const colorSelected = ref(null);
+    const sizeSelected = ref(null);
     const swatchColor = ref(null);
     function isSoldOutBySwatch(color) {
       let quantity = 0;
@@ -84,8 +87,30 @@ export default {
       });
       return quantity <= 0;
     }
+    function isSoldOutBySize(size) {
+      return size.quantity <= 0;
+    }
     function addToCart() {
-      console.log("addToCart:", props.product._id);
+      if (!sizeSelected.value || !colorSelected.value) {
+        store.dispatch("setModalError", true);
+        return;
+      }
+      const data = {
+        productId: props.product._id,
+        colorId: colorSelected.value._id,
+        sizeName: sizeSelected.value.name,
+        quantity: 1,
+      };
+      store
+        .dispatch("cart/addToCart", data)
+        .then((cart) => {
+          store.dispatch("setAddCartSuccess", true);
+          console.log("addToCart success:", cart);
+        })
+        .catch((error) => console.log("addToCart:", error));
+      // console.log("addToCart:", props.product);
+      // console.log("colorSelected:", colorSelected.value);
+      // console.log("sizeSelected:", sizeSelected.value);
     }
 
     function toDataHandlerSwatch(colorName) {
@@ -112,16 +137,27 @@ export default {
       eLi.classList.add("active");
 
       colorSelected.value = color;
+
+      //select sizes
+      for (const size of colorSelected.value.sizes) {
+        if (isSoldOutBySize(size)) continue;
+        sizeSelected.value = size;
+        break;
+      }
     }
     onMounted(() => {
-      if (props.product?.colors[0]) {
-        selectSwatch(props.product.colors[0]);
+      for (const color of props.product?.colors) {
+        if (!isSoldOutBySwatch(color)) {
+          selectSwatch(color);
+          break;
+        }
       }
     });
 
     return {
       toMoneyString,
       colorSelected,
+      sizeSelected,
       swatchColor,
       addToCart,
       isSoldOutBySwatch,

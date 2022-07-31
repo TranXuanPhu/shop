@@ -7,14 +7,11 @@
       <div class="order_total">
         <p>
           Tổng tiền:
-          <span class="total-price">1,211,000₫</span>
+          <span class="total-price">{{ toMoneyString(totalMoney) }}</span>
         </p>
       </div>
       <div class="order_text">
-        <p>
-          Phí vận chuyển sẽ được tính ở trang thanh toán.<br />
-          Bạn cũng có thể nhập mã giảm giá ở ở phía dưới
-        </p>
+        <p>Phí vận chuyển sẽ được tính ở trang thanh toán.</p>
       </div>
       <!-- <div class="check-bill">
         <div class="checkbox d-flex d-flex-center">
@@ -73,13 +70,14 @@
         /> -->
       </div>
       <div class="order_action">
-        <button
+        <router-link
+          :to="{ name: 'CheckOuts' }"
           class="btncart-checkout text-center"
           name="checkout"
-          type="submit"
         >
           THANH TOÁN NGAY
-        </button>
+        </router-link>
+
         <p class="link-continue text-center">
           <router-link :to="{ name: 'Home' }">
             <i class="fa fa-reply"></i> Tiếp tục mua hàng
@@ -90,9 +88,16 @@
   </div>
 </template>
 <script>
+import { useStore } from "vuex";
+import { computed } from "vue";
+import { toMoneyString } from "../../helpers/utils.js";
 export default {
   name: "cart-right-template",
-  setup() {},
+  setup() {
+    const store = useStore();
+    const totalMoney = computed(() => store.getters["cart/getTotalMoney"]);
+    return { totalMoney, toMoneyString };
+  },
 };
 </script>
 <style scoped>

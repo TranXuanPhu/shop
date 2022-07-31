@@ -39,6 +39,14 @@
                 }"
               />
             </FormKit>
+            <div style="padding-top: 10px">
+              Bạn chưa có tài khoản?
+              <router-link
+                :to="{ name: 'Register' }"
+                style="text-decoration: underline"
+                >Đăng ký</router-link
+              >
+            </div>
           </div>
         </div>
       </div>

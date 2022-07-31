@@ -2,23 +2,31 @@
   <ul class="cart-wrap" data-line="1">
     <li class="item-info">
       <div class="item-img">
-        <a href="/products/essential-tee-2022"
-          ><img
-            src="  //product.hstatic.net/200000031420/product/n_2_ab76ddd40a104d76bbff4be8c908e91e_medium.jpg"
-            alt="ESSENTIAL TEE 2022"
-        /></a>
+        <router-link
+          :to="{ name: 'ProductDetails', params: { slug: item.product?.slug } }"
+        >
+          <img
+            :src="`data:${item.color.image.img.contentType};base64,${item.color.image.img.data}`"
+            :alt="item.color.image.name"
+          />
+        </router-link>
       </div>
       <div class="item-title">
-        <a href="/products/essential-tee-2022">ESSENTIAL TEE 2022</a>
+        <router-link
+          :to="{ name: 'ProductDetails', params: { slug: item.product?.slug } }"
+        >
+          {{ item.product?.name }}
+        </router-link>
+        <a href="/products/essential-tee-2022"></a>
         <span class="item-option">
-          <span>Black / M</span>
+          <span>{{ getItemOptions() }}</span>
         </span>
         <span class="item-option" data-sku="undefined">
           <span>SKU: </span>
         </span>
         <span class="item-option">
           <span class="item-price">
-            <span class="money">99,000₫</span>
+            <span class="money">{{ toMoneyString(item.product.price) }}</span>
           </span>
         </span>
       </div>
@@ -34,7 +42,7 @@
           type="text"
           id="quantity_cart"
           name="quantity"
-          value="1"
+          :value="item.quantity"
           min="1"
           class="quantity-mini"
         /><input
@@ -52,29 +60,80 @@
     </li>
     <li class="item-price">
       <span class="amount full-price">
-        <span class="money">99,000₫</span>
+        <span class="money">{{
+          toMoneyString(item.product.price * item.quantity)
+        }}</span>
       </span>
     </li>
   </ul>
 </template>
 <script>
+import { toMoneyString } from "../../helpers/utils.js";
+import { useStore } from "vuex";
+
 export default {
   name: "cart-wrap-template",
-  setup() {
+  props: {
+    item: { type: Object },
+  },
+  setup(props) {
+    const store = useStore();
     function incrementQuantity() {
-      console.log("incrementQuantity");
-      // store.dispatch("cart/addProductToCart", props.item._id);
+      const data = {
+        itemId: props.item._id,
+        quantity: props.item.quantity + 1,
+      };
+      console.log("incrementQuantity", data);
+      store
+        .dispatch("cart/updateItemsInCart", data)
+        .then((cart) => {
+          console.log("incrementQuantity", cart);
+        })
+        .catch((error) => {
+          console.log("incrementQuantity", error);
+          store.dispatch("setModalError", true);
+        });
     }
     function decrementQuantity() {
       console.log("decrementQuantity");
-      //   if (props.item.quantity > 1)
-      //     store.dispatch("cart/decrementProductQuantity", props.item._id);
+      const data = {
+        itemId: props.item._id,
+        quantity: props.item.quantity - 1,
+      };
+      store
+        .dispatch("cart/updateItemsInCart", data)
+        .then((cart) => {
+          console.log("decrementQuantity", cart);
+        })
+        .catch((error) => {
+          console.log("decrementQuantity", error);
+        });
     }
-    function deleteProductCart() {
-      //store.dispatch("cart/deleteProductInCart", props.item._id);
+    function deleteItemCart() {
+      console.log("decrementQuantity");
+      const data = {
+        itemId: props.item._id,
+      };
+      store
+        .dispatch("cart/deleteItemsInCart", data)
+        .then((cart) => {
+          console.log("deleteItemCart", cart);
+        })
+        .catch((error) => {
+          console.log("deleteItemCart", error);
+        });
+    }
+    function getItemOptions() {
+      return props.item.color.name + " / " + props.item.size;
     }
 
-    return { incrementQuantity, decrementQuantity, deleteProductCart };
+    return {
+      incrementQuantity,
+      decrementQuantity,
+      deleteItemCart,
+      getItemOptions,
+      toMoneyString,
+    };
   },
 };
 </script>

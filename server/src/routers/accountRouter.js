@@ -18,6 +18,11 @@ router
   .patch(authController.isAuth, userController.updateAddress)
   .delete(authController.isAuth, userController.deleteAddress);
 
-router.route('/cart').post(cartController.addItemToCart);
+router
+  .route('/cart')
+  .get(authController.isAuth, cartController.getItemsInCart)
+  .post(authController.isAuth, cartController.addItemToCart)
+  .patch(authController.isAuth, cartController.updateItemsToCart)
+  .delete(authController.isAuth, cartController.deleteItemToCart);
 
 module.exports = router;

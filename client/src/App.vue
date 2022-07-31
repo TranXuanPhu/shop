@@ -35,6 +35,12 @@ export default {
     const isModalError = computed(() => store.getters["getIsModalError"]);
     const isModalSuccess = computed(() => store.getters["getIsModalSuccess"]);
 
+    //initial call url
+    const isLoggedIn = store.getters["user/getStatusLoggedIn"];
+    if (isLoggedIn) {
+      store.dispatch("cart/getItemCarts");
+    }
+
     return { isLoading, isModalError, isModalSuccess };
   },
 };

@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const userModel = require('../../models/user/userModel.js');
+const cartModel = require('../../models/cart/cartModel.js');
 const userController = require('./user/userController.js');
-const cartController = require('./user/cartController.js');
 
 const decodeToken = async (token, secretKey) => {
   return await promisify(jwt.verify)(token, secretKey);
@@ -16,18 +16,13 @@ const generateAccessToken = ({ userName }) => {
 
 //refresh token: token het han thi lay lai
 const generateRefreshToken = ({ userName }) => {
-  console.log('generating refresh token - userName:', userName);
+  //console.log('generating refresh token - userName:', userName);
   return jwt.sign({ userName }, process.env.JWT_REFRESH_SECRET, {
     expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
   });
 };
-const createSendToken = async (
-  { fullName, userName, email, role, addresses, cartId },
-  refreshToken,
-  statusCode,
-  req,
-  res
-) => {
+const createSendToken = async (user, refreshToken, statusCode, req, res) => {
+  const { fullName, userName, email, role, addresses, cartId } = user;
   const accessToken = generateAccessToken({ userName });
   // const refreshToken = generateRefreshToken({ userName });
   if (!accessToken || !refreshToken) {
@@ -37,7 +32,7 @@ const createSendToken = async (
     return;
   }
 
-  // const totalItemsCart = await cartController.getTotalItems(cartId);
+  const cart = await cartModel.findById(cartId).select('-items');
 
   res.status(statusCode).json({
     status: 'success',
@@ -48,7 +43,7 @@ const createSendToken = async (
         email,
         role,
         addresses,
-        // totalItemsCart,
+        totalItemsCart: cart?.totals,
       },
       accessToken,
       refreshToken,
@@ -58,7 +53,8 @@ const createSendToken = async (
 exports.register = async (req, res, next) => {
   console.log('register: ', req.body);
   try {
-    const refreshToken = generateRefreshToken(req.body.userName);
+    const refreshToken = generateRefreshToken({ userName: req.body.userName });
+    //console.log('register - refreshToken:', refreshToken);
     const user = await userModel.create({
       fullName: req.body.fullName,
       userName: req.body.userName,
