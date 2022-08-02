@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'wishLists',
   },
+  orders: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'orders',
+  },
   active: {
     type: Boolean,
     default: true,

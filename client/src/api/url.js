@@ -10,5 +10,6 @@ const url = {
 
   //cart
   cart: "account/cart",
+  orders: "account/orders",
 };
 export default url;

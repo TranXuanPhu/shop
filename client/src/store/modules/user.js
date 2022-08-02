@@ -24,6 +24,8 @@ const getters = {
   getStatusLoggedIn: (state) => state.status.loggedIn,
   getAccessToken: (state) => state.accessToken,
   getAddresses: (state) => state.loggedUser.addresses,
+  getAddressDefault: (state) =>
+    state.loggedUser.addresses.find((address) => address.default),
 };
 
 //actions
@@ -51,8 +53,9 @@ const actions = {
         return Promise.reject(error);
       });
   },
-  logOut({ commit }) {
+  logOut({ commit, dispatch }) {
     AccountService.logOut();
+    dispatch("cart/emptyCart", "", { root: true });
     commit("clearUserData");
   },
   async refreshToken({ state, commit }) {

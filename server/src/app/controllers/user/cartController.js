@@ -196,3 +196,16 @@ exports.deleteItemToCart = async (req, res, next) => {
   }
   next();
 };
+exports.emptyCart = async (cartId) => {
+  try {
+    let cart = await cartModel.findById(cartId);
+    if (!cart) return res.status(404).send('không tìm thấy giỏi hàng.');
+
+    cart.items = [];
+    await cart.save();
+    return true;
+  } catch (error) {
+    console.log('emptyCart:', error);
+  }
+  return false;
+};

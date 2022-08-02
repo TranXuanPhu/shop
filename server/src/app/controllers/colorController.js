@@ -1,5 +1,6 @@
 const fs = require('fs');
 const colorModel = require('../../models/product/colorModel.js');
+const sizeModel = require('../../models/product/sizeModel.js');
 
 exports.createColor = async (name, idImage, idSizes) => {
   try {
@@ -15,4 +16,19 @@ exports.createColor = async (name, idImage, idSizes) => {
   }
 
   return null;
+};
+
+exports.updateSize = async (idColor, sizeName, quantity) => {
+  try {
+    const color = await colorModel.findById(idColor);
+    const size = color.sizes.find((size) => size.name === sizeName);
+    if (!size) return false;
+    await sizeModel.findByIdAndUpdate(size._id, {
+      quantity: size.quantity - quantity,
+    });
+    return true;
+  } catch (error) {
+    console.error('updateSize:', error);
+  }
+  return false;
 };

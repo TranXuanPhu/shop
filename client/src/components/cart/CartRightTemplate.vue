@@ -54,7 +54,7 @@
           />
         </div>
       </div> -->
-      <div class="checkout-buttons clearfix">
+      <!-- <div class="checkout-buttons clearfix">
         <label for="note" class="note-label">Ghi chú đơn hàng</label>
         <textarea
           class="form-control"
@@ -63,12 +63,8 @@
           rows="4"
           placeholder="Ghi chú"
         ></textarea>
-        <!-- <input
-          class="form-control dt-width-100 mg-top-10"
-          id="code-discont"
-          placeholder="Nhập mã khuyến mãi (nếu có)"
-        /> -->
-      </div>
+       
+      </div> -->
       <div class="order_action">
         <router-link
           :to="{ name: 'CheckOuts' }"

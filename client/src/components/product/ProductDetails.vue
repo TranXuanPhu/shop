@@ -81,7 +81,10 @@
             </div>
           </div>
           <div id="add-item-form" class="variants clearfix">
-            <SelectSwatchTemplate :colors="product.colors" />
+            <SelectSwatchTemplate
+              :colors="product.colors"
+              :productId="product._id"
+            />
             <div class="row"></div>
           </div>
         </div>

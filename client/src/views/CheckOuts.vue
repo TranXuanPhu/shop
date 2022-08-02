@@ -2,7 +2,7 @@
   <div class="flexbox">
     <div class="content">
       <div class="wrap">
-        <div class="sidebar">
+        <div class="sidebar" v-if="!isOrderSucceeded">
           <div class="sidebar-content">
             <div class="order-summary order-summary-is-collapsed">
               <h2 class="visually-hidden">Thông tin đơn hàng</h2>
@@ -105,7 +105,16 @@
             </div>
           </div>
         </div>
-        <CheckOutsLeftTemplate />
+        <CheckOutsLeftTemplate
+          :address="addressDefault"
+          v-if="!isOrderSucceeded"
+          @handleOrder="(data) => handleOrder(data)"
+        />
+        <CheckOutSuccessTemplate
+          :info="infoOrder"
+          :indexCode="indexCode"
+          v-if="isOrderSucceeded"
+        />
       </div>
     </div>
   </div>
@@ -113,27 +122,60 @@
 <script>
 import ProductThumbnailTemplate from "../components/checkouts/ProductThumbnail.vue";
 import CheckOutsLeftTemplate from "../components/checkouts/CheckOutsLeft.vue";
+import CheckOutSuccessTemplate from "../components/checkouts/CheckOutSuccess.vue";
 import { toMoneyString } from "../helpers/utils.js";
 import { useStore } from "vuex";
 import { computed, ref } from "vue";
 export default {
   name: "checkouts-template",
-  components: { ProductThumbnailTemplate, CheckOutsLeftTemplate },
+  components: {
+    ProductThumbnailTemplate,
+    CheckOutsLeftTemplate,
+    CheckOutSuccessTemplate,
+  },
   setup() {
+    const indexCode = ref(0);
+    const isOrderSucceeded = ref(false);
     const store = useStore();
     const moneyShipping = ref(40000);
+    const infoOrder = ref({});
+    const addressDefault = computed(
+      () => store.getters["user/getAddressDefault"]
+    );
+
     const checkoutProducts = computed(() => store.getters["cart/getAllItems"]);
     const totalMoney = computed(() => store.getters["cart/getTotalMoney"]);
     const paymentDuePrice = computed(
       () => totalMoney.value + moneyShipping.value
     );
 
+    function handleOrder(data) {
+      store
+        .dispatch("orders/createOrder", {
+          ...data,
+          shippingMoney: 40000,
+        })
+        .then((index) => {
+          console.log("handleOrder mã index", index);
+          indexCode.value = index;
+          isOrderSucceeded.value = true;
+          infoOrder.value = data;
+          store.dispatch("cart/emptyCart");
+        })
+        .catch((error) => console.log("handleOrder", error));
+    }
+
     return {
+      indexCode,
+      infoOrder,
+      isOrderSucceeded,
       checkoutProducts,
       totalMoney,
       moneyShipping,
       paymentDuePrice,
+      addressDefault,
       toMoneyString,
+      handleOrder,
     };
   },
 };

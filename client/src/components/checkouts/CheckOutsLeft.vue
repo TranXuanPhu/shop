@@ -35,12 +35,15 @@
               type="form"
               :submit-attrs="{ inputClass: 'button' }"
               submit-label="Hoàng tất đơn hàng"
-              @submit="handleLogin"
+              @submit="handleOrders"
             >
               <FormKit
                 type="text"
                 label="Họ và tên"
                 name="fullName"
+                :value="
+                  address ? address?.firstName + ' ' + address?.lastName : ''
+                "
                 validation="required"
                 validation-visibility="dirty"
                 placeholder="nhập họ và tên"
@@ -52,11 +55,10 @@
                 type="email"
                 label="Email"
                 name="email"
-                validation="required|*email"
+                validation="*email"
                 validation-visibility="dirty"
                 placeholder="example@gmail.com"
                 :validation-messages="{
-                  required: validate.checkRequired('Email'),
                   email: validate.email,
                 }"
               />
@@ -64,6 +66,7 @@
                 type="tel"
                 label="Số điện thoại"
                 name="phone"
+                :value="address?.phone"
                 validation="required|matches:/^[0-9]{10}$/"
                 validation-visibility="dirty"
                 placeholder="xxx-xxx-xxxx"
@@ -79,19 +82,29 @@
                 validation="required"
                 validation-visibility="dirty"
                 placeholder="nhập địa chỉ"
+                :value="address?.address"
                 :validation-messages="{
                   required: validate.checkRequired('Địa chỉ'),
                 }"
               />
               <FormKit
+                type="textarea"
+                label="Ghi chú cho shop"
+                name="note"
+                validation-visibility="dirty"
+                placeholder="Ghi chú"
+              />
+              <FormKit
                 type="radio"
                 label="vận chuyển"
-                :options="['Giao hàng tận nơi 30,000₫']"
+                :options="['Giao hàng tận nơi 40,000₫']"
+                name="shippingMoney"
               />
               <FormKit
                 type="radio"
                 label="thanh toán"
                 :options="['Thanh toán khi giao hàng(COD)']"
+                name="shipCod"
               />
             </FormKit>
           </div>
@@ -106,7 +119,11 @@ import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { computed } from "vue";
 export default {
-  setup() {
+  name: "check-outs-left-template",
+  props: {
+    address: { type: Object },
+  },
+  setup(props, { emit }) {
     const store = useStore();
     const route = useRoute();
 
@@ -116,7 +133,12 @@ export default {
       return route.fullPath;
     }
 
-    return { isLoggedIn, redirect, validate };
+    function handleOrders(event) {
+      // console.log("handleOrders:", event);
+      emit("handleOrder", event);
+    }
+
+    return { isLoggedIn, redirect, validate, handleOrders };
   },
 };
 </script>

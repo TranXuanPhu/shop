@@ -66,6 +66,9 @@
             </label>
           </div>
         </div>
+        <div :class="sizeSelected ? 'error-hide' : 'error-messages'">
+          Hãy chọn kích thước sản phẩm
+        </div>
       </div>
     </div>
     <div class="row">
@@ -81,7 +84,7 @@
             type="text"
             id="quantity"
             name="quantity"
-            value="1"
+            :value="quantitySelect"
             min="1"
             class="quantity-selector"
           />
@@ -108,6 +111,7 @@
               id="buy-now"
               class="hidden-xs buynow-style"
               name="add"
+              @click="BuyProduct"
             >
               <span>Mua ngay</span>
             </button>
@@ -120,6 +124,7 @@
 <script>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { removeVietnameseTones } from "../../helpers/utils.js";
 export default {
   name: "select-swatch-template",
@@ -127,12 +132,17 @@ export default {
     colors: {
       type: Array,
     },
+    productId: {
+      type: String,
+    },
   },
   setup(props) {
     //data
     const store = useStore();
+    const router = useRouter();
+    const sizeSelected = ref({});
     const colorSelected = ref({});
-    const sizeSelected = ref();
+    const quantitySelect = ref(1);
 
     // ref  id="variant-swatch-0"
     const swatchColor = ref(null);
@@ -141,7 +151,38 @@ export default {
 
     //add to cart
     function addToCart() {
-      store.dispatch("setAddCartSuccess", true, {});
+      if (!sizeSelected.value) return;
+      const data = {
+        productId: props.productId,
+        colorId: colorSelected.value._id,
+        sizeName: sizeSelected.value.name,
+        quantity: quantitySelect.value,
+      };
+      console.log("data:", data);
+      store
+        .dispatch("cart/addToCart", data)
+        .then((cart) => {
+          store.dispatch("setAddCartSuccess", true);
+          console.log("addToCart success:", cart);
+        })
+        .catch((error) => console.log("addToCart:", error));
+    }
+    //BuyProduct
+    function BuyProduct() {
+      if (!sizeSelected.value) return;
+      const data = {
+        productId: props.productId,
+        colorId: colorSelected.value._id,
+        sizeName: sizeSelected.value.name,
+        quantity: quantitySelect.value,
+      };
+      console.log("data:", data);
+      store
+        .dispatch("cart/addToCart", data)
+        .then(() => {
+          router.push({ name: "CheckOuts" });
+        })
+        .catch((error) => console.log("addToCart:", error));
     }
 
     function isSoldOutBySwatch(color) {
@@ -182,6 +223,15 @@ export default {
     function selectSwatch(color) {
       //check soldout
       if (isSoldOutBySwatch(color)) return;
+      colorSelected.value = color;
+      //chọn size
+      sizeSelected.value = undefined;
+      for (const size of color.sizes) {
+        if (!isSoldOutBySize(size)) {
+          selectSize(size);
+          break;
+        }
+      }
       //remove class sd
       const labelElements = swatchColor.value.querySelectorAll(
         "label[data-vhandle]"
@@ -195,17 +245,6 @@ export default {
         `label[data-vhandle='${toDataHandlerSwatch(color.name)}']`
       );
       elLabel.classList.add("sd");
-
-      colorSelected.value = color;
-
-      //chọn size
-      sizeSelected.value = undefined;
-      for (const size of color.sizes) {
-        if (!isSoldOutBySize(size)) {
-          selectSize(size);
-          break;
-        }
-      }
     }
     function toDataHandlerSwatch(colorName) {
       return (
@@ -215,11 +254,27 @@ export default {
     }
 
     // minusQuantity
-    function minusQuantity() {}
+    function minusQuantity() {
+      if (sizeSelected.value) {
+        if (quantitySelect.value > 1) quantitySelect.value--;
+      }
+    }
+    function plusQuantity() {
+      if (sizeSelected.value) {
+        if (sizeSelected.value.quantity > quantitySelect.value)
+          quantitySelect.value++;
+      }
+    }
 
     onMounted(() => {
-      if (props.colors[0]) {
-        selectSwatch(props.colors[0]);
+      // if (props.colors[0]) {
+      //   selectSwatch(props.colors[0]);
+      // }
+      for (const color of props.colors) {
+        if (!isSoldOutBySwatch(color)) {
+          selectSwatch(color);
+          break;
+        }
       }
     });
     // watch(
@@ -246,7 +301,9 @@ export default {
     //     }
     //   }
     // });
+
     return {
+      quantitySelect,
       selectSwatch,
       colorSelected,
       swatchColor,
@@ -257,12 +314,22 @@ export default {
       selectSize,
       isSoldOutBySize,
       minusQuantity,
+      plusQuantity,
       addToCart,
+      BuyProduct,
     };
   },
 };
 </script>
 <style scoped>
+.error-hide {
+  display: none;
+}
+.error-messages {
+  padding-top: 10px;
+  color: #e4393c;
+  display: block;
+}
 .swatch {
   padding: 15px 0;
   width: 100%;

@@ -104,6 +104,11 @@ const routes = [
         component: () => import("../components/account/Addresses.vue"),
       },
       {
+        name: "Orders",
+        path: "orders/:id",
+        component: () => import("../components/account/Orders.vue"),
+      },
+      {
         path: "logout",
         component: () => import("../components/account/Logout.vue"),
         beforeEnter: () => {

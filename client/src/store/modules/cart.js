@@ -74,6 +74,9 @@ const actions = {
         return Promise.reject(error);
       });
   },
+  emptyCart({ commit }) {
+    commit("setItemCarts", { items: [], totals: 0 });
+  },
 };
 
 //mutations

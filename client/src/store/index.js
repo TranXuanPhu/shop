@@ -2,6 +2,7 @@ import { createStore, createLogger } from "vuex";
 import { products } from "./modules/products.js";
 import { user } from "./modules/user.js";
 import { cart } from "./modules/cart.js";
+import { orders } from "./modules/orders.js";
 
 const debug = process.env.NODE_ENV !== "production";
 
@@ -61,6 +62,7 @@ export default createStore({
     products,
     user,
     cart,
+    orders,
   },
   strict: debug,
   plugins: debug ? [createLogger()] : [],
