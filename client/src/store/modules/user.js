@@ -2,6 +2,9 @@ import AccountService from "../../api/services/account.service.js";
 import UserService from "../../api/services/user.service.js";
 import tokenService from "../../api/services/token.service.js";
 
+const isRoleManager = (role) => {
+  return ["manager", "admin"].includes(role);
+};
 const userLocal = tokenService.getUser();
 //state
 const state = userLocal
@@ -26,6 +29,7 @@ const getters = {
   getAddresses: (state) => state.loggedUser.addresses,
   getAddressDefault: (state) =>
     state.loggedUser.addresses.find((address) => address.default),
+  isManager: (state) => isRoleManager(state.loggedUser.role),
 };
 
 //actions

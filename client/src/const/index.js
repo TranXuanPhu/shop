@@ -27,3 +27,21 @@ export const accountContent = [
     href: "/account/logout",
   },
 ];
+
+export const ManagerContent = [
+  {
+    icon: "fa-solid fa-shirt fa-lg",
+    title: "Tạo sản phẩm mới",
+    href: "/products/new",
+  },
+  {
+    icon: "fa-solid fa-list-ol fa-lg",
+    title: "Quản lý sản phẩm",
+    href: "/manager/products",
+  },
+  {
+    icon: "fa-solid fa-truck fa-lg",
+    title: "Quản lý đơn hàng",
+    href: "/manager/orders",
+  },
+];

@@ -40,7 +40,7 @@
                   <span class="title"> Thương hiệu: </span>
                   <router-link
                     :to="{
-                      name: 'collections',
+                      name: 'Collections',
                       params: { type: 'vendor' },
                       query: {
                         q: removeVietnameseTones(product.vendor)
@@ -57,7 +57,7 @@
                   <span class="title">Loại: </span>
                   <router-link
                     :to="{
-                      name: 'collections',
+                      name: 'Collections',
                       params: { type: 'types' },
                       query: { q: 'san-pham-moi' },
                     }"
@@ -135,15 +135,9 @@
                   <li><p>Không chứa hóa chất độc có hại cho sức khỏe</p></li>
                 </ul>
                 <p>
-                  Dòng sản phẩm #99K đã quay trở lại với chất lượng nâng cấp
-                  vượt trội về chất lượng.
+                  {{ product.description }}
                 </p>
-                <p>
-                  Vẫn mang xu hướng tối giản, chú trọng những chi tiết thêu và
-                  màu sắc của áo. 2022, chúng ta không thể mãi nhàm chán với
-                  những chiếc áo trắng - đen. Trải nghiệm những điều mới mẻ thôi
-                  nào!!!
-                </p>
+
                 <p>Shopee: heyyoustudio.vn</p>
               </div>
             </div>

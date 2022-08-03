@@ -14,13 +14,13 @@ const routes = [
     component: () => import("../views/Home.vue"),
   },
   { path: "/home", redirect: "/" },
+  // {
+  //   name: "collections",
+  //   path: "/collections/:type?:q",
+  //   component: () => import("../views/Collections.vue"),
+  // },
   {
-    name: "collections",
-    path: "/collections/:type?:q",
-    component: () => import("../views/Collections.vue"),
-  },
-  {
-    name: "collections",
+    name: "Collections",
     path: "/collections/:type",
     component: () => import("../views/Collections.vue"),
   },
@@ -69,12 +69,7 @@ const routes = [
     component: () => import("../views/CheckOuts.vue"),
     meta: { requiresAuth: true },
   },
-  {
-    name: "NewProduct",
-    path: "/products/new",
-    component: () => import("../components/product/NewProduct.vue"),
-    meta: { requiresAuth: true },
-  },
+
   {
     name: "Account",
     path: "/account",
@@ -116,7 +111,32 @@ const routes = [
           return { name: "Home" };
         },
       },
+
+      /**
+       * path requiring auth, manager, admin in account
+       */
+      {
+        name: "ManagerOrders",
+        path: "/manager/orders",
+        component: () => import("../components/manager/ManagerOrders.vue"),
+      },
     ],
+  },
+
+  /**
+   * path requiring auth, manager, admin
+   */
+  {
+    name: "ManagerProducts",
+    path: "/manager/products",
+    component: () => import("../views/Manager/ManagerProducts.vue"),
+    meta: { requiresAuth: true, requiresManager: true },
+  },
+  {
+    name: "NewProduct",
+    path: "/products/new",
+    component: () => import("../components/product/NewProduct.vue"),
+    meta: { requiresAuth: true, requiresManager: true },
   },
 ];
 
@@ -127,11 +147,21 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   const isLoggedIn = store.getters["user/getStatusLoggedIn"];
+  const isManager = store.getters["user/isManager"];
   const requiresAuth = to.matched.some(
     (route) => route.meta && route.meta.requiresAuth
   );
+  const requiresManager = to.matched.some(
+    (route) => route.meta && route.meta.requiresManager
+  );
+
   if (!isLoggedIn && requiresAuth) {
     return next(Guard.redirectToLogin(to));
+  }
+
+  if (requiresManager) {
+    if (!isLoggedIn) return next(Guard.redirectToLogin(to));
+    if (!isManager) return next(Guard.redirectToHome(to));
   }
 
   return next();

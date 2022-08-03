@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-xs-12" id="customer_sidebar">
-      <h1 class="title-detail h3">Đơn hàng của tôi</h1>
+      <h1 class="title-detail h3">Quản lý tất cả đơn hàng</h1>
       <div
         class="col-xs-12 customer-table-wrap content-entry"
         id="customer_orders"
@@ -11,13 +11,12 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th class="order_number text-center">Mã đơn hàng</th>
-                  <th class="date text-center">Ngày đặt</th>
-                  <th class="total text-center">Thành tiền</th>
-                  <th class="payment_status text-center">
-                    Trạng thái thanh toán
-                  </th>
-                  <th class="fulfillment_status text-center">Vận chuyển</th>
+                  <th class="order_number text-center">Đơn hàng</th>
+                  <th class="date text-right">Người nhận</th>
+                  <th class="total text-right">Địa chỉ</th>
+                  <th class="payment_status text-center">Vận chuyển</th>
+                  <th class="payment_status text-center">Trạng thái</th>
+                  <th class="fulfillment_status text-center">chi tiết</th>
                 </tr>
               </thead>
               <tbody>
@@ -29,22 +28,23 @@
                       #{{ order.index }}
                     </router-link>
                   </td>
-                  <td class="text-center">
-                    <span>{{ order.createdAt }}</span>
+                  <td class="text-right">
+                    <span>{{ order.fullName }}</span>
+                  </td>
+                  <td class="text-right">
+                    <span class="total money">{{ order.address }}</span>
                   </td>
                   <td class="text-center">
-                    <span class="total money">{{
-                      toMoneyString(order.totalMoney)
+                    <span class="status_paid">{{ order.shippingStatus }}</span>
+                  </td>
+                  <td class="text-center">
+                    <span class="status_paid">{{
+                      order.completed ? "Hoàn thành" : "chưa Hoàn thành"
                     }}</span>
-                  </td>
-                  <td class="text-center">
-                    <span class="status_paid">{{ order.paymentStatus }}</span>
                   </td>
 
                   <td class="text-center">
-                    <span class="status_fulfilled" data-note="">{{
-                      order.shippingStatus
-                    }}</span>
+                    <span class="status_fulfilled" data-note="">Chi tiết</span>
                   </td>
                 </tr>
               </tbody>
@@ -56,24 +56,30 @@
   </div>
 </template>
 <script>
-import { useRoute } from "vue-router";
-import { useStore } from "vuex";
-import { computed } from "vue";
+//import { useStore } from "vuex";
+import { ref } from "vue";
 import { toMoneyString } from "../../helpers/utils.js";
+import axios from "axios";
+import url from "../../api/url.js";
 export default {
-  name: "view-query-template",
+  name: "manager-orders-template",
   setup() {
-    const route = useRoute();
-    const store = useStore();
-    console.log("query:", route.query);
+    //const store = useStore();
 
-    const orders = computed(() => store.getters["orders/getOrders"]);
+    const orders = ref(); //= computed(() => store.getters["orders/getOrders"]);
+    function getOrders() {
+      axios
+        .get(url.managerOrders)
+        .then((response) => {
+          orders.value = response.data.itemOrders;
+          console.log("response:", orders.value);
+        })
+        .catch((error) => {
+          console.log("getOrders:", error);
+        });
+    }
 
-    store
-      .dispatch("orders/getOrders")
-      .then((orders) => (orders.value = orders))
-      .catch((err) => console.log("getOrder", err));
-
+    getOrders();
     return { orders, toMoneyString };
   },
 };

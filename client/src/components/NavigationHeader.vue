@@ -30,29 +30,60 @@
                 <div class="sub_top_menu">
                   <ul class="sub_menu_dropdown">
                     <li class="">
-                      <a href="/collections/allitems" title="ALL"> ALL </a>
+                      <router-link
+                        :to="{ name: 'Collections', params: { type: 'all' } }"
+                      >
+                        All
+                      </router-link>
                     </li>
-
                     <li class="">
-                      <a href="/collections/tee" title="TEE"> TEE </a>
+                      <router-link
+                        :to="{ name: 'Collections', params: { type: 'tee' } }"
+                      >
+                        TEE
+                      </router-link>
                     </li>
-
-                    <li class="">
-                      <a href="/collections/sweater" title="SWEATER">
+                    <!-- <li class="">
+                      <router-link
+                        :to="{
+                          name: 'Collections',
+                          params: { type: 'sweater' },
+                        }"
+                      >
                         SWEATER
-                      </a>
+                      </router-link>
+                    </li>
+                    <li class="">
+                      <router-link
+                        :to="{
+                          name: 'Collections',
+                          params: { type: 'hoodie' },
+                        }"
+                      >
+                        HOODIE
+                      </router-link>
+                    </li> -->
+
+                    <li class="">
+                      <router-link
+                        :to="{
+                          name: 'Collections',
+                          params: { type: 'jacket' },
+                        }"
+                      >
+                        JACKET
+                      </router-link>
                     </li>
 
                     <li class="">
-                      <a href="/collections/hoodie" title="HOODIE"> HOODIE </a>
-                    </li>
-
-                    <li class="">
-                      <a href="/collections/jacket" title="JACKET"> JACKET </a>
-                    </li>
-
-                    <li class="">
-                      <a href="/collections/pant" title="PANT"> PANT </a>
+                      <router-link
+                        :to="{
+                          name: 'Collections',
+                          params: { type: 'pant' },
+                        }"
+                      >
+                        PANT
+                      </router-link>
                     </li>
                   </ul>
                 </div>

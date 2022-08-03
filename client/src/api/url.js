@@ -1,5 +1,6 @@
 const url = {
   products: "products",
+  collections: "collections",
 
   //account
   account: "account",
@@ -11,5 +12,8 @@ const url = {
   //cart
   cart: "account/cart",
   orders: "account/orders",
+
+  //manager
+  managerOrders: "manager/orders",
 };
 export default url;

@@ -140,3 +140,13 @@ exports.createOder = async (req, res, next) => {
       .send('Không thể tạo đơn hàng, xin hãy kiểm tra lại.');
   }
 };
+
+exports.getAllOrders = async (req, res, next) => {
+  try {
+    const itemOrders = await itemOrderModel.find({});
+    res.status(200).json({ itemOrders });
+  } catch (error) {
+    console.log('getAllOrders:', error);
+    return res.status(404).send('Không thể lấy tát cả danh sách đơn hàng.');
+  }
+};

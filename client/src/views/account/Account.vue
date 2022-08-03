@@ -18,6 +18,13 @@
               </div>
             </div>
             <div class="AccountContent">
+              <!-- admin, manager -->
+              <div v-if="isManager">
+                <ul v-for="(info, index) in ManagerContent" :key="index">
+                  <LeftHeaderTemplate :info="info" />
+                </ul>
+              </div>
+              <!-- admin, manager -->
               <ul v-for="(info, index) in accountContent" :key="index">
                 <LeftHeaderTemplate :info="info" />
               </ul>
@@ -35,7 +42,7 @@
 </template>
 <script>
 import LeftHeaderTemplate from "../../components/account/LeftHeader.vue";
-import { accountContent } from "../../const/index.js";
+import { accountContent, ManagerContent } from "../../const/index.js";
 import { useStore } from "vuex";
 import { computed } from "vue";
 export default {
@@ -49,9 +56,15 @@ export default {
         ?.map((element) => element.charAt(0).toUpperCase())
         ?.join("");
     }
-
+    const isManager = computed(() => store.getters["user/isManager"]);
     const loggedUser = computed(() => store.getters["user/getLoggedUser"]);
-    return { accountContent, getFirstCharacter, loggedUser };
+    return {
+      accountContent,
+      ManagerContent,
+      getFirstCharacter,
+      loggedUser,
+      isManager,
+    };
   },
 };
 </script>

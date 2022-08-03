@@ -82,7 +82,7 @@
                 validation="required"
                 validation-visibility="dirty"
                 placeholder="nhập địa chỉ"
-                :value="address?.address"
+                :value="address?.address + ', ' + address?.province"
                 :validation-messages="{
                   required: validate.checkRequired('Địa chỉ'),
                 }"

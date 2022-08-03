@@ -11,3 +11,13 @@ exports.getOverView = async (req, res, next) => {
     res.status(404).send(error);
   }
 };
+exports.getCollectionByType = async (req, res, next) => {
+  try {
+    const allProducts = await productModel.find({ style: req.params.style });
+    console.log('getCollectionByType: done!!');
+    res.status(200).json({ products: allProducts });
+  } catch (error) {
+    console.error('getCollectionByType', error);
+    res.status(404).send(error);
+  }
+};

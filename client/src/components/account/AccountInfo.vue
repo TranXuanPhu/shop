@@ -7,21 +7,20 @@
           <tbody>
             <tr>
               <td><strong>Họ tên: </strong></td>
-              <td>Phú Trần Xuân</td>
+              <td>{{ loggedUser.fullName }}</td>
             </tr>
             <tr>
               <td><strong>Email: </strong></td>
-              <td>xuanphu821@gmail.com</td>
+              <td>{{ loggedUser.email }}</td>
             </tr>
             <tr>
               <td><strong>Số điện thoại: </strong></td>
-              <td>0762606778</td>
+              <td>{{ address ? address.phone : "" }}</td>
             </tr>
             <tr>
               <td><strong>Địa chỉ: </strong></td>
               <td>
-                Xóm 14 Đồng Miệu Xã Phú An Huyện Phú Vang Thừa Thiên Huế,
-                Vietnam
+                {{ address ? address.address + " " + address.province : "" }}
               </td>
             </tr>
           </tbody>
@@ -31,9 +30,17 @@
   </div>
 </template>
 <script>
+import { computed } from "vue";
+import { useStore } from "vuex";
 export default {
   name: "account-info-template",
-  setup() {},
+  setup() {
+    const store = useStore();
+    const loggedUser = computed(() => store.getters["user/getLoggedUser"]);
+    const address = computed(() => store.getters["user/getAddressDefault"]);
+
+    return { loggedUser, address };
+  },
 };
 </script>
 <style scoped></style>

@@ -278,16 +278,16 @@ export default {
       }
     });
     // watch(
-    //   () => colorSelected,
-    //   (newColor, oldColor) => {
+    //   () => colorSelected.value,
+    //   (newColor) => {
     //     // (newColor) => {
-    //     console.log(newColor, oldColor);
-    //     // for (const size of newColor.sizes) {
-    //     //   if (!isSoldOutBySize(size)) {
-    //     //     selectSize(size);
-    //     //     break;
-    //     //   }
-    //     // }
+    //     console.log(newColor);
+    //     for (const size of newColor.sizes) {
+    //       if (!isSoldOutBySize(size)) {
+    //         selectSize(size);
+    //         break;
+    //       }
+    //     }
     //   }
     // );
     // watchEffect(() => {

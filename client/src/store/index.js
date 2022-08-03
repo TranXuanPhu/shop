@@ -8,7 +8,7 @@ const debug = process.env.NODE_ENV !== "production";
 
 //state
 const state = {
-  isLoading: true,
+  isLoading: false,
   isModalError: false,
   modalAddCartSuccess: {
     showModal: false,

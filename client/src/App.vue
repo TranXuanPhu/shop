@@ -1,8 +1,8 @@
 <template>
   <main>
     <NavigationHeader />
-    <LoadingTemplate v-if="false" />
-    <router-view v-show="true" />
+    <LoadingTemplate v-if="isLoading" />
+    <router-view v-show="!isLoading" />
     <NavigationFooter />
     <ErrorTemplate v-if="isModalError" />
     <SuccessTemplate v-if="isModalSuccess" />
